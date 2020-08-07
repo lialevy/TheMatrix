@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-game-setup-page',
@@ -12,4 +12,7 @@ export class GameSetupPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  printfunc($event: any): void {
+    console.log($event);
+  }
 }
