@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "TheMatrix"
+    }
+  },
+  "defaultProject": "TheMatrix",
+  "cli": {
+    "analytics": "b1b7b354-a695-4930-9136-47de1fc98516"
+  }
 }
