@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
-import Player from '../classes/Player.class';
-import TwoPlayerGame from '../classes/TwoPlayerGame.class';
+import { Matrix, Player, TwoPlayerGame } from '../classes';
 
 export type Game = TwoPlayerGame;
 
@@ -9,14 +8,14 @@ export interface Strategy {
   strategy: string;
 }
 
-export interface Matrix {
-  playersStrategies: string[][];
-  paymentsMatrix: {
-    [firstStrategy: string]: {
-      [secondStrategy: string]: [number, number] | { [thirdStrategy: string]: [number, number, number] }
-    }
-  };
-}
+// export interface Matrix {
+//   playersStrategies: string[][];
+//   paymentsMatrix: {
+//     [firstStrategy: string]: {
+//       [secondStrategy: string]: [number, number] | { [thirdStrategy: string]: [number, number, number] }
+//     }
+//   };
+// }
 
 export interface Results {
   scoreTable: any;
@@ -38,7 +37,7 @@ export default interface GameServiceInterface {
 
   setMatrixValues(matrix: Matrix): void;
 
-  finalizeGameSetup(): [boolean, string];
+  finalizeGameSetup(): [boolean, string[]];
 
   getGameMatrix(): Matrix;
 
