@@ -1,22 +1,29 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MatRadioChange } from '@angular/material/radio';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  Input,
+  DoCheck,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
+import { MatRadioChange } from "@angular/material/radio";
 
 @Component({
-  selector: 'app-setup-form',
-  templateUrl: './setup-form.component.html',
-  styleUrls: ['./setup-form.component.scss']
+  selector: "app-setup-form",
+  templateUrl: "./setup-form.component.html",
+  styleUrls: ["./setup-form.component.scss"],
 })
-export class SetupFormComponent implements OnInit {
-  @Output() formChange: EventEmitter<any> = new EventEmitter();
+export class SetupFormComponent implements OnInit, OnChanges {
+  @Input() gameSettings;
 
-  numberOfPlayers = 2;
+  @Output() gameSettingsChange;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {}
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("im changed!");
   }
 
-  numberOfPlayersChanged($event: MatRadioChange): void {
-    this.formChange.emit($event);
-  }
+  ngOnInit(): void {}
 }

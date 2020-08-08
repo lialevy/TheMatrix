@@ -1,7 +1,33 @@
 <div>
-  Choose # of players: 
-  <mat-radio-group [value]="numberOfPlayers" (change)="numberOfPlayersChanged($event)">
+  Choose # of players:
+  <mat-radio-group [(ngModel)]="gameSettings.numberOfPlayers">
     <mat-radio-button [value]="2">2</mat-radio-button>
     <mat-radio-button [value]="3">3</mat-radio-button>
   </mat-radio-group>
+</div>
+
+<div>
+  Choose # of rounds
+  <mat-form-field>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="gameSettings.numberOfRounds"
+      placeholder="rounds"
+      min="1"
+    />
+  </mat-form-field>
+</div>
+
+<div>
+  Choose game matrix dimensions
+  <mat-form-field>
+    <input matInput type="number" placeholder="rows" min="1" />
+  </mat-form-field>
+
+  X
+
+  <mat-form-field>
+    <input matInput type="number" placeholder="cols" min="1" />
+  </mat-form-field>
 </div>

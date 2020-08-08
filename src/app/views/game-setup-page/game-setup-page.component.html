@@ -1,3 +1,60 @@
 <div>
-  <app-setup-form (formChange)="printfunc($event)"></app-setup-form>
+  <form name="gameSetupForm" onsubmit="handleSubmit">
+    <div>
+      Choose # of players:
+      <mat-radio-group
+        [(ngModel)]="gameSettings.numberOfPlayers"
+        name="numberOfPlayers"
+      >
+        <mat-radio-button [value]="2">2</mat-radio-button>
+        <mat-radio-button [value]="3">3</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div>
+      Choose # of rounds
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="gameSettings.numberOfRounds"
+          name="numberOfRounds"
+          placeholder="rounds"
+          min="1"
+        />
+      </mat-form-field>
+    </div>
+
+    <div>
+      Choose game matrix dimensions
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="gameSettings.gameMatrixNumOfRows"
+          name="gameMatrixNumOfRows"
+          placeholder="rows"
+          min="1"
+        />
+      </mat-form-field>
+
+      X
+
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="gameSettings.gameMatrixNumOfCols"
+          name="gameMatrixNumOfCols"
+          placeholder="cols"
+          min="1"
+        />
+      </mat-form-field>
+    </div>
+    <div>
+      <button mat-raised-button type="submit" color="accent">
+        ready to play
+      </button>
+    </div>
+  </form>
 </div>
