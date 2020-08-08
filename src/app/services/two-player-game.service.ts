@@ -1,21 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import GameService, { Game, Matrix, Results } from './game-service.interface';
+import GameServiceInterface, { Game, Matrix, Results } from './game-service.interface';
+import TwoPlayerGame from '../classes/TwoPlayerGame.class';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TwoPlayerGameService implements GameService {
+export class TwoPlayerGameService {
 
-  constructor() { }
-  
-  game: Game;
-  
-  setNumberOfPlayers(numberOfPlayers: number): void {
-    throw new Error('Method not implemented.');
+  constructor() {
+    this.gameSubject = new TwoPlayerGame();
+  }
+
+  private gameSubject: TwoPlayerGame;
+  public game: Game;
+
+  /**
+   * Sets the game number of players
+   * @param numberOfPlayers number of players the game has
+   */
+  createPlayers(): void {
+    this.gameSubject.createPlayers();
   }
   setNumberOfRounds(numberOfRounds: number): void {
-    throw new Error('Method not implemented.');
+    this.gameSubject.numberOfRounds = numberOfRounds;
   }
   createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix {
     throw new Error('Method not implemented.');

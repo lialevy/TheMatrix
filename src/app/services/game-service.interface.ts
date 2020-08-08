@@ -1,20 +1,12 @@
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
+import Player from '../classes/Player.class';
+import TwoPlayerGame from '../classes/TwoPlayerGame.class';
 
-export interface Player {
-  _id: string; // uuid
-  name?: string;
-  cookies: number;
-}
+export type Game = TwoPlayerGame;
 
-export interface Game {
-  players: Player[];
-  matrix: Matrix;
-  rounds: Round[]
-}
-
-export interface Round {
-  playedStrategies: number[];
-  result: number[];
+export interface Strategy {
+  player: Player;
+  strategy: string;
 }
 
 export interface Matrix {
@@ -23,7 +15,7 @@ export interface Matrix {
     [firstStrategy: string]: {
       [secondStrategy: string]: [number, number] | { [thirdStrategy: string]: [number, number, number] }
     }
-  }
+  };
 }
 
 export interface Results {
@@ -31,15 +23,17 @@ export interface Results {
   roundsTable: any;
 }
 
-export default interface GameService {
-  game: Game;
-
+export default interface GameServiceInterface {
+  // TODO
   setNumberOfPlayers(numberOfPlayers: number): void;
 
+  // TODO
   setNumberOfRounds(numberOfRounds: number): void;
 
+  // TODO
   createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix;
 
+  // TODO
   generateRandomMatrixValues(): Matrix;
 
   setMatrixValues(matrix: Matrix): void;
