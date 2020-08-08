@@ -55,7 +55,7 @@ export class GameService implements GameServiceInterface {
   }
 
   getGameMatrix(): Matrix {
-    throw new Error('Not Implemented');
+    return this.gameService.getGameMatrix();
   }
 
   getPlayerScoresObservable(): Observable<number[]> {

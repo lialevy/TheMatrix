@@ -9,12 +9,15 @@ export interface PlayerGameService {
   generateRandomMatrixValues(minValue?: number, maxValue?: number): Matrix;
   finalizeGameSetup(): void;
   validateGame(): [boolean, string[]];
+  getGameMatrix(): Matrix;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TwoPlayerGameService implements PlayerGameService {
+  player1PossibleStrategies = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  player2PossibleStrategies = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
   constructor() {
     this.gameSubject = new TwoPlayerGame();
@@ -38,13 +41,13 @@ export class TwoPlayerGameService implements PlayerGameService {
     const paymentsMatrix = {};
 
     for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-      const strategyName = uniqueNamesGenerator({ dictionaries: [ 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('') ]});
+      const strategyName = this.player1PossibleStrategies[rowIndex];
       firstPlayerStrategies.push(strategyName);
       paymentsMatrix[strategyName] = {};
     }
 
     for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
-      const strategyName = uniqueNamesGenerator({ dictionaries: [ 'abcdefghijklmnopqrstuvwxyz'.split('') ]});
+      const strategyName = this.player2PossibleStrategies[columnIndex];
       secondPlayerStrategies.push(strategyName);
 
       for (const firstPlayerStrategy in paymentsMatrix) {
@@ -105,5 +108,9 @@ export class TwoPlayerGameService implements PlayerGameService {
     }
 
     return [(errors.length > 0), errors];
+  }
+
+  getGameMatrix(): TwoPlayerMatrix {
+    return this.gameSubject.matrix;
   }
 }
