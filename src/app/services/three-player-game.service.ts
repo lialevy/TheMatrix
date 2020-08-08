@@ -27,4 +27,8 @@ export class ThreePlayerGameService implements PlayerGameService {
   validateGame(): [boolean, string[]] {
     throw new Error('Method not implemented.');
   }
+
+  getGameMatrix(): TwoPlayerMatrix {
+    throw new Error('Method not implemented');
+  }
 }
