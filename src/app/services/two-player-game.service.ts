@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Matrix, Round, TwoPlayerGame, TwoPlayerMatrix } from '../classes';
-import { Strategy } from './game-service.interface';
+import { Matrix, Player, Round, TwoPlayerGame, TwoPlayerMatrix } from '../classes';
+import { Results, Strategy } from './game-service.interface';
 
 export interface PlayerGameService {
   playerScores$: Observable<number[]>;
@@ -13,9 +13,11 @@ export interface PlayerGameService {
   generateRandomMatrixValues(minValue?: number, maxValue?: number): Matrix;
   finalizeGameSetup(): void;
   validateGame(): [boolean, string[]];
+  getPlayers(): Player[];
   getGameMatrix(): Matrix;
   getPlayerStrategies(): string[][];
-  submitPlayerStrategy(player: string, strategy: string): void;
+  submitPlayerStrategy(playerIndex: number, strategy: string): void;
+  getGameResults(): Results;
 }
 
 @Injectable({
@@ -124,6 +126,10 @@ export class TwoPlayerGameService implements PlayerGameService {
     return [(errors.length > 0), errors];
   }
 
+  getPlayers(): Player[] {
+    return this.gameSubject.players;
+  }
+
   getGameMatrix(): TwoPlayerMatrix {
     return this.gameSubject.matrix;
   }
@@ -132,9 +138,7 @@ export class TwoPlayerGameService implements PlayerGameService {
     return this.gameSubject.matrix.playersStrategies;
   }
 
-  submitPlayerStrategy(player: string, strategy: string): void {
-    const playerIndex = this.gameSubject.players.findIndex(p => p.id === player);
-
+  submitPlayerStrategy(playerIndex: number, strategy: string): void {
     this.currentPlayerStrategies[playerIndex] = {
       player: this.gameSubject.players[playerIndex],
       strategy
@@ -149,10 +153,15 @@ export class TwoPlayerGameService implements PlayerGameService {
 
       this.gameSubject.players[0].cookies += roundResult[0];
       this.gameSubject.players[1].cookies += roundResult[1];
+      this.gameSubject.rounds.push(round);
 
       this.currentPlayerStrategies = [undefined, undefined];
       this.roundSubject.next(this.roundSubject.value + 1);
       this.playerScoresSubject.next([this.gameSubject.players[0].cookies, this.gameSubject.players[1].cookies]);
     }
+  }
+
+  getGameResults(): Results {
+    throw new Error('Method not implemented.');
   }
 }
