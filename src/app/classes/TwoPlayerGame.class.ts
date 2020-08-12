@@ -30,6 +30,7 @@ export default class TwoPlayerGame extends Game {
     };
 
     this.numberOfRounds = numberOfRounds;
+    this.rounds = [];
   }
 
   createPlayers(): void {

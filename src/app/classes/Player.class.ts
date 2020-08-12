@@ -8,7 +8,7 @@ export default class Player {
 
   constructor(name?: string, cookies: number = 0) {
     this.id = uuidv4();
-    this.name = uniqueNamesGenerator({ dictionaries: [names] });
+    this.name = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
     this.cookies = cookies;
   }
 }
