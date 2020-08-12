@@ -5,11 +5,10 @@ import { PlayerGameService } from "./two-player-game.service";
 @Injectable({
   providedIn: "root",
 })
-export class ThreePlayerGameService implements PlayerGameService {
-  constructor() {}
-  finalizeGameSetup(): void {
-    throw new Error("Method not implemented.");
-  }
+
+export class ThreePlayerGameService { //implements PlayerGameService {
+
+  constructor() { }
   createGameMatrix(rows: number, columns: number, depth: number): Matrix {
     throw new Error("Method not implemented.");
   }
