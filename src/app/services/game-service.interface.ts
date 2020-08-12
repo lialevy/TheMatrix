@@ -47,7 +47,7 @@ export default interface GameServiceInterface {
 
   getPlayerStrategies(): string[][];
 
-  submitPlayerStrategy(player: string, strategy: number): void;
+  submitPlayerStrategy(player: string, strategy: string): void;
 
   getGameResults(): Results;
 }

@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
-import { uniqueNamesGenerator } from 'unique-names-generator';
-import { Matrix, TwoPlayerGame, TwoPlayerMatrix } from '../classes';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Matrix, Round, TwoPlayerGame, TwoPlayerMatrix } from '../classes';
+import { Strategy } from './game-service.interface';
 
 export interface PlayerGameService {
+  playerScores$: Observable<number[]>;
+  currentRound$: Observable<number>;
+
   createPlayers(): void;
   setNumberOfRounds(numberOfRounds: number): void;
   createGameMatrix(rows: number, columns: number, depth: number): Matrix;
@@ -10,29 +14,39 @@ export interface PlayerGameService {
   finalizeGameSetup(): void;
   validateGame(): [boolean, string[]];
   getGameMatrix(): Matrix;
+  getPlayerStrategies(): string[][];
+  submitPlayerStrategy(player: string, strategy: string): void;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TwoPlayerGameService implements PlayerGameService {
-  player1PossibleStrategies = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  player2PossibleStrategies = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  private player1PossibleStrategies = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  private player2PossibleStrategies = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  private gameSubject: TwoPlayerGame;
+  private playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
+  private roundSubject: BehaviorSubject<number> = new BehaviorSubject(0);
+  private currentPlayerStrategies: [Strategy, Strategy] = [undefined, undefined];
+
+  public playerScores$: Observable<number[]> = this.playerScoresSubject.asObservable();
+  public currentRound$: Observable<number>;
 
   constructor() {
     this.gameSubject = new TwoPlayerGame();
   }
-
-  private gameSubject: TwoPlayerGame;
 
   /**
    * Creates players players
    */
   createPlayers(): void {
     this.gameSubject.createPlayers();
+
+    this.playerScoresSubject.next(this.gameSubject.players.map(p => p.cookies));
   }
   setNumberOfRounds(numberOfRounds: number): void {
     this.gameSubject.numberOfRounds = numberOfRounds;
+    this.roundSubject.next(1);
   }
 
   createGameMatrix(rows: number, columns: number, _: number): TwoPlayerMatrix {
@@ -112,5 +126,33 @@ export class TwoPlayerGameService implements PlayerGameService {
 
   getGameMatrix(): TwoPlayerMatrix {
     return this.gameSubject.matrix;
+  }
+
+  getPlayerStrategies(): string[][] {
+    return this.gameSubject.matrix.playersStrategies;
+  }
+
+  submitPlayerStrategy(player: string, strategy: string): void {
+    const playerIndex = this.gameSubject.players.findIndex(p => p.id === player);
+
+    this.currentPlayerStrategies[playerIndex] = {
+      player: this.gameSubject.players[playerIndex],
+      strategy
+    };
+
+    // Finish round
+    if (this.currentPlayerStrategies[0] !== undefined && this.currentPlayerStrategies[1] !== undefined) {
+      const [s1, s2] = this.currentPlayerStrategies;
+      const roundResult = this.gameSubject.matrix.paymentsMatrix[s1.strategy][s2.strategy];
+
+      const round = new Round(this.currentPlayerStrategies, roundResult);
+
+      this.gameSubject.players[0].cookies += roundResult[0];
+      this.gameSubject.players[1].cookies += roundResult[1];
+
+      this.currentPlayerStrategies = [undefined, undefined];
+      this.roundSubject.next(this.roundSubject.value + 1);
+      this.playerScoresSubject.next([this.gameSubject.players[0].cookies, this.gameSubject.players[1].cookies]);
+    }
   }
 }
