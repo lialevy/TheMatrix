@@ -59,19 +59,19 @@ export class GameService implements GameServiceInterface {
   }
 
   getPlayerScoresObservable(): Observable<number[]> {
-    throw new Error('Not Implemented');
+    return this.gameService.playerScores$;
   }
 
   getRoundNumberObservable(): Observable<number> {
-    throw new Error('Not Implemented');
+    return this.gameService.currentRound$;
   }
 
   getPlayerStrategies(): string[][] {
-    throw new Error('Not Implemented');
+    return this.gameService.getPlayerStrategies();
   }
 
-  submitPlayerStrategy(player: string, strategy: number): void {
-    throw new Error('Not Implemented');
+  submitPlayerStrategy(player: string, strategy: string): void {
+    this.gameService.submitPlayerStrategy(player, strategy);
   }
 
   getGameResults(): Results {
