@@ -94,7 +94,7 @@ export class TwoPlayerGameService implements PlayerGameService {
   }
 
   finalizeGameSetup(): void {
-    if (this.gameSubject.players.length === 0) {
+    if (!this.gameSubject.players || this.gameSubject.players.length === 0) {
       this.createPlayers();
     }
   }
