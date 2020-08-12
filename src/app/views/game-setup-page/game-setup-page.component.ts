@@ -34,6 +34,7 @@ export class GameSetupPageComponent implements OnInit {
       this.gameSettings.gameMatrixNumOfCols,
       this.gameSettings.gameMatrixDepth
     );
+    this.gameService.finalizeGameSetup();
     this.router.navigate(["/game"]);
   }
 

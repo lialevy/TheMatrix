@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "src/app/services/game.service";
+import { Observable } from "rxjs";
+import { Matrix } from "src/app/classes";
 
 @Component({
   selector: "app-game-page",
@@ -7,30 +9,46 @@ import { GameService } from "src/app/services/game.service";
   styleUrls: ["./game-page.component.scss"],
 })
 export class GamePageComponent implements OnInit {
+  scores$: Observable<number[]>;
+
+  gameMatrix: Matrix;
+  firstPlayerStrategies: string[];
+  secondPlayerStrategies: string[];
+  displayedColumns: string[];
+  dataSource: any;
+
   constructor(private gameService: GameService) {}
 
-  gameMatrix = this.gameService.generateRandomMatrixValues();
-  firstPlayerStrategies = this.gameMatrix.playersStrategies[0];
-  secondPlayerStrategies = this.gameMatrix.playersStrategies[1];
-  paymentsMatrix = this.gameMatrix.paymentsMatrix;
+  ngOnInit(): void {
+    this.gameMatrix = this.gameService.generateRandomMatrixValues();
 
-  displayedColumns: string[] = [
-    "playerStrategy",
-    ...this.secondPlayerStrategies,
-  ];
+    [
+      this.firstPlayerStrategies,
+      this.secondPlayerStrategies,
+    ] = this.gameMatrix.playersStrategies;
 
-  dataSource = this.firstPlayerStrategies.map((rowStrategy) => {
-    const tableRows = {
-      playerStrategy: rowStrategy,
-    };
-    this.secondPlayerStrategies.forEach((colStrategy) => {
-      tableRows[colStrategy] = this.paymentsMatrix[rowStrategy][colStrategy];
+    this.displayedColumns = ["playerStrategy", ...this.secondPlayerStrategies];
+
+    this.dataSource = this.firstPlayerStrategies.map((rowStrategy) => {
+      const tableRows = {
+        playerStrategy: rowStrategy,
+      };
+      this.secondPlayerStrategies.forEach((colStrategy) => {
+        tableRows[colStrategy] = this.gameMatrix.paymentsMatrix[rowStrategy][
+          colStrategy
+        ];
+      });
+
+      return tableRows;
     });
 
-    return tableRows;
-  });
+    this.scores$ = this.gameService.getPlayerScoresObservable();
+  }
 
-  handleFirstPlayerPick(firstPlayerPickedStrategy) {}
-
-  ngOnInit(): void {}
+  handleFirstPlayerPick(firstPlayerPickedStrategy) {
+    this.gameService.submitPlayerStrategy(0, firstPlayerPickedStrategy);
+  }
+  handleSecondPlayerPick(secondPlayerPickedStrategy) {
+    this.gameService.submitPlayerStrategy(1, secondPlayerPickedStrategy);
+  }
 }

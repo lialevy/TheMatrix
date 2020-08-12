@@ -1,15 +1,4 @@
-<p>game-page works!</p>
-<!-- <div>
-  <button
-    mat-raised-button
-    type="button"
-    color="accent"
-    style="width: 100%;"
-    (click)="displayMatrix()"
-  >
-    button
-  </button>
-</div> -->
+<p>{{ scores$ | async }}</p>
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   ual rendered columns are set as a property on the row definition" -->
@@ -17,6 +6,7 @@
   <ng-container matColumnDef="playerStrategy">
     <th mat-header-cell *matHeaderCellDef></th>
     <td
+      class="clickable"
       (click)="handleFirstPlayerPick(row.playerStrategy)"
       mat-cell
       *matCellDef="let row"
@@ -27,7 +17,14 @@
 
   <div *ngFor="let colStrategy of secondPlayerStrategies">
     <ng-container [matColumnDef]="colStrategy">
-      <th mat-header-cell *matHeaderCellDef>{{ colStrategy }}</th>
+      <th
+        class="clickable"
+        (click)="handleSecondPlayerPick(colStrategy)"
+        mat-header-cell
+        *matHeaderCellDef
+      >
+        {{ colStrategy }}
+      </th>
       <td mat-cell *matCellDef="let row">{{ row[colStrategy] }}</td>
     </ng-container>
     ]
