@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
+import { Router } from "@angular/router";
 
 export interface GameSettings {
   numberOfPlayers: 2 | 3;
@@ -23,7 +24,7 @@ export class GameSetupPageComponent implements OnInit {
     gameMatrixDepth: 1,
   };
 
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService, private router: Router) {}
 
   handleSubmit() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
@@ -33,6 +34,7 @@ export class GameSetupPageComponent implements OnInit {
       this.gameSettings.gameMatrixNumOfCols,
       this.gameSettings.gameMatrixDepth
     );
+    this.router.navigate(["/game"]);
   }
 
   ngOnInit(): void {}
