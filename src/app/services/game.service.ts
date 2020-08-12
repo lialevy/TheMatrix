@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Matrix } from '../classes';
+import { Matrix, Player } from '../classes';
 import GameServiceInterface, { Results } from './game-service.interface';
 import { ThreePlayerGameService } from './three-player-game.service';
 import { PlayerGameService, TwoPlayerGameService } from './two-player-game.service';
@@ -54,6 +54,10 @@ export class GameService implements GameServiceInterface {
     return this.gameService.validateGame();
   }
 
+  getPlayers(): Player[] {
+    return this.gameService.getPlayers();
+  }
+
   getGameMatrix(): Matrix {
     return this.gameService.getGameMatrix();
   }
@@ -70,11 +74,11 @@ export class GameService implements GameServiceInterface {
     return this.gameService.getPlayerStrategies();
   }
 
-  submitPlayerStrategy(player: string, strategy: string): void {
+  submitPlayerStrategy(player: number, strategy: string): void {
     this.gameService.submitPlayerStrategy(player, strategy);
   }
 
   getGameResults(): Results {
-    throw new Error('Not Implemented');
+    return this.gameService.getGameResults();
   }
 }
