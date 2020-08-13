@@ -29,17 +29,19 @@ export class TwoPlayerGameService implements PlayerGameService {
   private gameSubject: TwoPlayerGame;
   private playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
   private roundSubject: BehaviorSubject<number> = new BehaviorSubject(0);
+  private gameFinishedSubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private currentPlayerStrategies: [Strategy, Strategy] = [undefined, undefined];
 
   public playerScores$: Observable<number[]> = this.playerScoresSubject.asObservable();
-  public currentRound$: Observable<number>;
+  public currentRound$: Observable<number> = this.roundSubject.asObservable();
+  public gameFinished$: Observable<boolean> = this.gameFinishedSubject.asObservable();
 
   constructor() {
     this.gameSubject = new TwoPlayerGame();
   }
 
   /**
-   * Creates players players
+   * Creates players
    */
   createPlayers(): void {
     this.gameSubject.createPlayers();
@@ -156,12 +158,33 @@ export class TwoPlayerGameService implements PlayerGameService {
       this.gameSubject.rounds.push(round);
 
       this.currentPlayerStrategies = [undefined, undefined];
-      this.roundSubject.next(this.roundSubject.value + 1);
       this.playerScoresSubject.next([this.gameSubject.players[0].cookies, this.gameSubject.players[1].cookies]);
+
+      if (this.roundSubject.value < this.gameSubject.numberOfRounds) {
+        this.roundSubject.next(this.roundSubject.value + 1);
+      } else {
+        this.gameFinishedSubject.next(true);
+      }
     }
   }
 
   getGameResults(): Results {
-    throw new Error('Method not implemented.');
+    const [firstPlayer, secondPlayer]: (Player & { place?: 1 | 2 | 3 })[] = this.getPlayers();
+
+    if (firstPlayer.cookies === secondPlayer.cookies) {
+      firstPlayer.place = 1;
+      secondPlayer.place = 1;
+    } else if (firstPlayer.cookies > secondPlayer.cookies) {
+      firstPlayer.place = 1;
+      secondPlayer.place = 2;
+    } else {
+      secondPlayer.place = 1;
+      firstPlayer.place = 2;
+    }
+
+    return {
+      scoreTable: [firstPlayer, secondPlayer],
+      roundsTable: this.gameSubject.rounds
+    };
   }
 }

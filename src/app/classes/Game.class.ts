@@ -15,7 +15,7 @@ export default abstract class Game {
     this.players = [];
 
     for (let playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) {
-      this.players.push(new Player());
+      this.players.push(new Player(playerIndex as 0 | 1 | 2));
     }
   }
 }
