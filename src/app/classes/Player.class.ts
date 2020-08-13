@@ -1,14 +1,13 @@
-import { v4 as uuidv4 } from 'uuid';
-import { uniqueNamesGenerator, names} from 'unique-names-generator';
+import { uniqueNamesGenerator, animals} from 'unique-names-generator';
 
 export default class Player {
-  id: string; // uuid
+  playerNumber: 0 | 1 | 2;
   name?: string;
   cookies: number;
 
-  constructor(name?: string, cookies: number = 0) {
-    this.id = uuidv4();
-    this.name = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
+  constructor(playerNumber: 0 | 1 | 2, name?: string, cookies: number = 0) {
+    this.playerNumber = playerNumber;
+    this.name = uniqueNamesGenerator({ dictionaries: [animals], length: 1 });
     this.cookies = cookies;
   }
 }

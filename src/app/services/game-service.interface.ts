@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Matrix, Player, TwoPlayerGame } from '../classes';
+import { Matrix, Player, Round, TwoPlayerGame } from '../classes';
 
 export type Game = TwoPlayerGame;
 
@@ -18,8 +18,8 @@ export interface Strategy {
 // }
 
 export interface Results {
-  scoreTable: any;
-  roundsTable: any;
+  scoreTable: (Player & { place?: 1 | 2 | 3 })[];
+  roundsTable: Round[];
 }
 
 export default interface GameServiceInterface {
