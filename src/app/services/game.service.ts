@@ -12,6 +12,8 @@ export class GameService implements GameServiceInterface {
   private gameService: PlayerGameService;
   private numberOfPlayers: number;
 
+  public gameFinished$: Observable<boolean>;
+
   constructor(
     private twoPlayerGameService: TwoPlayerGameService,
     private threePlayerGameService: ThreePlayerGameService
@@ -28,6 +30,8 @@ export class GameService implements GameServiceInterface {
     } else {
       throw new Error('numberOfPlayers must be 2 or 3');
     }
+
+    this.gameFinished$ = this.gameService.gameFinished$;
   }
 
   setNumberOfRounds(numberOfRounds: number): void {

@@ -23,6 +23,8 @@ export interface Results {
 }
 
 export default interface GameServiceInterface {
+  gameFinished$: Observable<boolean>;
+
   // TODO
   setNumberOfPlayers(numberOfPlayers: number): void;
 
