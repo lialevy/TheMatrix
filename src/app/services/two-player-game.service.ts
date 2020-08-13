@@ -6,6 +6,7 @@ import { Results, Strategy } from './game-service.interface';
 export interface PlayerGameService {
   playerScores$: Observable<number[]>;
   currentRound$: Observable<number>;
+  gameFinished$: Observable<boolean>;
 
   createPlayers(): void;
   setNumberOfRounds(numberOfRounds: number): void;
