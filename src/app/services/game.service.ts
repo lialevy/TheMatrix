@@ -1,47 +1,41 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { skipWhile } from "rxjs/operators";
-import { Matrix, Player } from "../classes";
-import GameServiceInterface, { Results } from "./game-service.interface";
-import { ThreePlayerGameService } from "./three-player-game.service";
 import {
-  PlayerGameService,
-  TwoPlayerGameService,
-} from "./two-player-game.service";
+  Game,
+  Matrix,
+  Player,
+  ThreePlayerGame,
+  TwoPlayerGame,
+} from "../classes";
+import GameServiceInterface, { Results } from "./game-service.interface";
 
 @Injectable({
   providedIn: "root",
 })
 export class GameService implements GameServiceInterface {
-  private gameService: PlayerGameService;
+  private game: Game;
   private numberOfPlayers: number;
 
   public gameFinished$: Observable<boolean>;
 
-  constructor(
-    private twoPlayerGameService: TwoPlayerGameService,
-    private threePlayerGameService: ThreePlayerGameService
-  ) {}
+  constructor() {}
 
   setNumberOfPlayers(numberOfPlayers: number): void {
     this.numberOfPlayers = numberOfPlayers;
 
     if (this.numberOfPlayers === 2) {
-      this.gameService = this.twoPlayerGameService;
+      this.game = new TwoPlayerGame();
     } else if (this.numberOfPlayers === 3) {
-      throw new Error("numberOfPlayers=3 not supported");
-      // this.gameService = this.threePlayerGameService;
+      this.game = new ThreePlayerGame();
     } else {
       throw new Error("numberOfPlayers must be 2 or 3");
     }
 
-    this.gameFinished$ = this.gameService.gameFinished$.pipe(
-      skipWhile((finished) => !finished)
-    );
+    this.gameFinished$ = this.game.gameFinished$;
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
-    this.gameService.setNumberOfRounds(numberOfRounds);
+    this.game.setNumberOfRounds(numberOfRounds);
   }
 
   createGameMatrixByDimensions(
@@ -49,11 +43,11 @@ export class GameService implements GameServiceInterface {
     columns: number,
     depth?: number
   ): Matrix {
-    return this.gameService.createGameMatrix(rows, columns, depth);
+    return this.game.createGameMatrix(rows, columns, depth);
   }
 
   generateRandomMatrixValues(): Matrix {
-    return this.gameService.generateRandomMatrixValues();
+    return this.game.generateRandomMatrixValues();
   }
 
   setMatrixValues(matrix: Matrix): void {
@@ -64,35 +58,35 @@ export class GameService implements GameServiceInterface {
    * Validate game is ready and finalize game creation if required
    */
   finalizeGameSetup(): [boolean, string[]] {
-    this.gameService.finalizeGameSetup();
-    return this.gameService.validateGame();
+    this.game.finalizeGameSetup();
+    return this.game.validateGame();
   }
 
   getPlayers(): Player[] {
-    return this.gameService.getPlayers();
+    return this.game.players;
   }
 
   getGameMatrix(): Matrix {
-    return this.gameService.getGameMatrix();
+    return this.game.matrix;
   }
 
   getPlayerScoresObservable(): Observable<number[]> {
-    return this.gameService.playerScores$;
+    return this.game.playerScores$;
   }
 
   getRoundNumberObservable(): Observable<number> {
-    return this.gameService.currentRound$;
+    return this.game.currentRound$;
   }
 
   getPlayerStrategies(): string[][] {
-    return this.gameService.getPlayerStrategies();
+    return this.game.matrix.playersStrategies;
   }
 
   submitPlayerStrategy(player: number, strategy: string): void {
-    this.gameService.submitPlayerStrategy(player, strategy);
+    this.game.submitPlayerStrategy(player, strategy);
   }
 
   getGameResults(): Results {
-    return this.gameService.getGameResults();
+    return this.game.getGameResults();
   }
 }
