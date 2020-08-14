@@ -3,6 +3,7 @@ import TwoPlayerGame, { TwoPlayerMatrix } from './TwoPlayerGame.class';
 import ThreePlayerGame, { ThreePlayerMatrix } from './ThreePlayerGame.class';
 import Player from './Player.class';
 import Round from './Round.class';
+import Strategy from './Strategy.class';
 
 type Matrix = TwoPlayerMatrix | ThreePlayerMatrix;
 
@@ -15,4 +16,5 @@ export {
   ThreePlayerMatrix,
   Player,
   Round,
-}
+  Strategy,
+};

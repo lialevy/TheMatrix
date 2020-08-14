@@ -1,11 +1,11 @@
-import { Strategy } from '../services/game-service.interface';
+import Strategy from './Strategy.class';
 
 export default class Round {
   playedStrategies: Strategy[];
   result: number[];
 
   constructor(playedStrategies: Strategy[], result: number[]) {
-    this.playedStrategies = playedStrategies;
+    this.playedStrategies = playedStrategies.map(s => new Strategy(s.player, s.strategy));
     this.result = result;
   }
 }
