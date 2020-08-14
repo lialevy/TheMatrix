@@ -1,45 +1,60 @@
-<div>
-  {{ firstPlayerName }} picks
-  <button
-    *ngFor="let firstPlayerStrategy of firstPlayerStrategies"
-    mat-raised-button
-    color="primary"
-    (click)="handleFirstPlayerPick(firstPlayerStrategy)"
-  >
-    {{ firstPlayerStrategy }}
-  </button>
-</div>
-<div>
-  {{ secondPlayerName }} picks
-  <button
-    *ngFor="let secondPlayerStrategy of secondPlayerStrategies"
-    mat-raised-button
-    color="accent"
-    (click)="handleSecondPlayerPick(secondPlayerStrategy)"
-  >
-    {{ secondPlayerStrategy }}
-  </button>
-</div>
-<div *ngIf="!isTwoPlayersGame">
-  {{ thirdPlayerName }} picks
-  <button
-    *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
-    mat-raised-button
-    color="warn"
-    (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
-  >
-    {{ thirdPlayerStrategy }}
-  </button>
+<p style="background-color: rgb(212, 164, 240); text-align: center;">
+  total score: {{ scores$ | async }}
+</p>
+
+<!-- players pick strategy buttons -->
+<div
+  class="strategyPick"
+  fxLayout="row"
+  fxLayout="row wrap"
+  fxLayoutGap="35px"
+  fxLayoutAlign="center stretch"
+>
+  <div>
+    {{ firstPlayerName }} picks
+    <button
+      *ngFor="let firstPlayerStrategy of firstPlayerStrategies"
+      mat-raised-button
+      color="primary"
+      (click)="handleFirstPlayerPick(firstPlayerStrategy)"
+    >
+      {{ firstPlayerStrategy }}
+    </button>
+  </div>
+
+  <div>
+    {{ secondPlayerName }} picks
+    <button
+      *ngFor="let secondPlayerStrategy of secondPlayerStrategies"
+      mat-raised-button
+      color="accent"
+      (click)="handleSecondPlayerPick(secondPlayerStrategy)"
+    >
+      {{ secondPlayerStrategy }}
+    </button>
+  </div>
+
+  <div *ngIf="!isTwoPlayersGame">
+    {{ thirdPlayerName }} picks
+    <button
+      *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
+      mat-raised-button
+      color="warn"
+      (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
+    >
+      {{ thirdPlayerStrategy }}
+    </button>
+  </div>
 </div>
 
-<p>{{ scores$ | async }}</p>
+<!-- game matrix -->
 
 <div fxLayout="row" fxLayout="row wrap" fxLayoutGap="30px">
   <div
     class="gameMatrices"
     *ngFor="let matrixStrategy of thirdPlayerStrategies"
   >
-    <div>
+    <div *ngIf="!isTwoPlayersGame" style="text-align: center;">
       {{ matrixStrategy }}
     </div>
 
@@ -58,7 +73,7 @@
         class="gameMatrices"
         *ngFor="let colStrategy of secondPlayerStrategies"
       >
-        <ng-container [matColumnDef]="colStrategy">
+        <ng-container *ngIf="!isTwoPlayersGame" [matColumnDef]="colStrategy">
           <th mat-header-cell *matHeaderCellDef>
             {{ colStrategy }}
           </th>
@@ -66,7 +81,15 @@
             {{ row[colStrategy][matrixStrategy] }}
           </td>
         </ng-container>
-        ]
+
+        <ng-container *ngIf="isTwoPlayersGame" [matColumnDef]="colStrategy">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ colStrategy }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row[colStrategy] }}
+          </td>
+        </ng-container>
       </div>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

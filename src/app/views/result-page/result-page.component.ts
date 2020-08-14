@@ -22,6 +22,9 @@ export class ResultPageComponent implements OnInit {
     this.gameResults = this.gameService.getGameResults();
     this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
 
+    //TODO: is sorted by cookies??
+    console.log(this.gameResults.scoreTable);
+
     this.firstPlayer = this.gameResults.scoreTable[0];
     this.secondPlayer = this.gameResults.scoreTable[1];
 

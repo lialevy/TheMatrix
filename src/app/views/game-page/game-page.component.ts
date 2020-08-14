@@ -30,19 +30,18 @@ export class GamePageComponent implements OnInit {
     this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
     this.firstPlayerName = this.gameService.getPlayers()[0].name;
     this.secondPlayerName = this.gameService.getPlayers()[1].name;
-    // console.log(firstPlayerName);
 
     [
       this.firstPlayerStrategies,
       this.secondPlayerStrategies,
     ] = this.gameMatrix.playersStrategies;
 
+    this.thirdPlayerStrategies = ["0"];
+
     if (!this.isTwoPlayersGame) {
       this.thirdPlayerStrategies = this.gameMatrix.playersStrategies[2];
       this.thirdPlayerName = this.gameService.getPlayers()[2].name;
     }
-
-    this.displayedColumns = ["playerStrategy", ...this.secondPlayerStrategies];
 
     this.dataSource = this.thirdPlayerStrategies.map((matrixStrategy) => {
       const tableRows = {
@@ -61,6 +60,11 @@ export class GamePageComponent implements OnInit {
       };
       return tableRows;
     });
+
+    console.log(this.dataSource);
+    console.log(this.gameMatrix.paymentsMatrix);
+
+    this.displayedColumns = ["playerStrategy", ...this.secondPlayerStrategies];
 
     this.scores$ = this.gameService.getPlayerScoresObservable();
     this.gameService.gameFinished$.subscribe((_) => {
