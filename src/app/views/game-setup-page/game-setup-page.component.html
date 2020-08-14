@@ -1,7 +1,7 @@
 <div class="gameSetupFormDiv">
   <form name="gameSetupForm" (ngSubmit)="handleSubmit()">
     <div>
-      Choose # of players:
+      Choose # Of Players:
       <mat-radio-group
         [(ngModel)]="gameSettings.numberOfPlayers"
         name="numberOfPlayers"
@@ -12,7 +12,7 @@
     </div>
 
     <div>
-      Choose # of rounds
+      Choose # Of Rounds
       <mat-form-field>
         <input
           matInput
@@ -26,7 +26,7 @@
     </div>
 
     <div>
-      Choose game matrix dimensions
+      Choose Game Matrix Dimensions
       <mat-form-field>
         <input
           matInput
@@ -64,14 +64,15 @@
         />
       </mat-form-field>
     </div>
-    <div>
+
+    <div style="margin-top: 15px;">
       <button
         mat-raised-button
         type="submit"
         color="accent"
         style="width: 100%;"
       >
-        ready to play
+        Ready To Play
       </button>
     </div>
   </form>

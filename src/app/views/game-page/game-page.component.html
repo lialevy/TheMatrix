@@ -1,6 +1,8 @@
-<p style="background-color: rgb(212, 164, 240); text-align: center;">
-  total score: {{ scores$ | async }}
-</p>
+<div>
+  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
+    Total Score: {{ scores$ | async }}
+  </p>
+</div>
 
 <!-- players pick strategy buttons -->
 <div
@@ -14,7 +16,7 @@
     {{ firstPlayerName }} picks
     <button
       *ngFor="let firstPlayerStrategy of firstPlayerStrategies"
-      mat-raised-button
+      mat-stroked-button
       color="primary"
       (click)="handleFirstPlayerPick(firstPlayerStrategy)"
     >
@@ -26,7 +28,7 @@
     {{ secondPlayerName }} picks
     <button
       *ngFor="let secondPlayerStrategy of secondPlayerStrategies"
-      mat-raised-button
+      mat-stroked-button
       color="accent"
       (click)="handleSecondPlayerPick(secondPlayerStrategy)"
     >
@@ -38,7 +40,7 @@
     {{ thirdPlayerName }} picks
     <button
       *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
-      mat-raised-button
+      mat-stroked-button
       color="warn"
       (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
     >
