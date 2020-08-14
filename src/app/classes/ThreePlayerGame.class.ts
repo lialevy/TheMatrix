@@ -134,7 +134,7 @@ export default class ThreePlayerGame extends Game {
       this.currentPlayerStrategies[2] !== undefined
     ) {
       const [s1, s2, s3] = this.currentPlayerStrategies;
-      const roundResult = this.matrix[s1.strategy][s2.strategy][s3.strategy];
+      const roundResult = this.matrix.paymentsMatrix[s1.strategy][s2.strategy][s3.strategy];
 
       super.finishRound(roundResult);
     }
