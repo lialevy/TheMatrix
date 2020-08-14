@@ -1,9 +1,10 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Matrix } from '.';
-import { Results, Strategy } from '../services/game-service.interface';
+import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
 import Round from './Round.class';
-import { skipWhile } from 'rxjs/operators';
+import Strategy from './Strategy.class';
+import { skipWhile, tap } from 'rxjs/operators';
 
 export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
@@ -25,9 +26,7 @@ export default abstract class Game {
   numberOfRounds: number;
   rounds: Round[];
 
-  constructor() {
-
-  }
+  constructor() { }
 
   createPlayers(numberOfPlayers): void {
     this.players = [];

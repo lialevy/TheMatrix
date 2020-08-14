@@ -1,5 +1,6 @@
 import { Player } from '.';
-import { Results, Strategy } from '../services/game-service.interface';
+import { Results } from '../services/game-service.interface';
+import Strategy from './Strategy.class';
 import Game from './Game.class';
 
 export interface ThreePlayerMatrix {

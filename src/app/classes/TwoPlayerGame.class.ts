@@ -1,7 +1,7 @@
 import Player from './Player.class';
-import Round from './Round.class';
 import Game from './Game.class';
-import { Results, Strategy } from '../services/game-service.interface';
+import Strategy from './Strategy.class';
+import { Results } from '../services/game-service.interface';
 
 export interface TwoPlayerMatrix {
   playersStrategies?: string[][];
