@@ -107,7 +107,7 @@ export default class TwoPlayerGame extends Game {
       this.currentPlayerStrategies[1] !== undefined
     ) {
       const [s1, s2] = this.currentPlayerStrategies;
-      const roundResult = this.matrix[s1.strategy][s2.strategy];
+      const roundResult = this.matrix.paymentsMatrix[s1.strategy][s2.strategy];
 
       super.finishRound(roundResult);
     }
