@@ -14,7 +14,8 @@ export interface TwoPlayerMatrix {
 
 export default class TwoPlayerGame extends Game {
   matrix: TwoPlayerMatrix;
-  #currentPlayerStrategies: [Strategy, Strategy] = [
+
+  protected currentPlayerStrategies: [Strategy, Strategy] = [
     undefined,
     undefined,
   ];
@@ -102,10 +103,10 @@ export default class TwoPlayerGame extends Game {
     super.submitPlayerStrategy(playerIndex, strategy);
 
     if (
-      this.#currentPlayerStrategies[0] !== undefined &&
-      this.#currentPlayerStrategies[1] !== undefined
+      this.currentPlayerStrategies[0] !== undefined &&
+      this.currentPlayerStrategies[1] !== undefined
     ) {
-      const [s1, s2] = this.#currentPlayerStrategies;
+      const [s1, s2] = this.currentPlayerStrategies;
       const roundResult = this.matrix[s1.strategy][s2.strategy];
 
       super.finishRound(roundResult);

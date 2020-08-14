@@ -15,7 +15,8 @@ export interface ThreePlayerMatrix {
 
 export default class ThreePlayerGame extends Game {
   #player3PossibleStrategies = '01234567890αβγ'.split('');
-  #currentPlayerStrategies: [Strategy, Strategy, Strategy] = [
+
+  protected currentPlayerStrategies: [Strategy, Strategy, Strategy] = [
     undefined,
     undefined,
     undefined,
@@ -128,11 +129,11 @@ export default class ThreePlayerGame extends Game {
     super.submitPlayerStrategy(playerIndex, strategy);
 
     if (
-      this.#currentPlayerStrategies[0] !== undefined &&
-      this.#currentPlayerStrategies[1] !== undefined &&
-      this.#currentPlayerStrategies[2] !== undefined
+      this.currentPlayerStrategies[0] !== undefined &&
+      this.currentPlayerStrategies[1] !== undefined &&
+      this.currentPlayerStrategies[2] !== undefined
     ) {
-      const [s1, s2, s3] = this.#currentPlayerStrategies;
+      const [s1, s2, s3] = this.currentPlayerStrategies;
       const roundResult = this.matrix[s1.strategy][s2.strategy][s3.strategy];
 
       super.finishRound(roundResult);

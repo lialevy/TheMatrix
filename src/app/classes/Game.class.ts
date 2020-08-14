@@ -9,10 +9,10 @@ export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
   #roundSubject: BehaviorSubject<number> = new BehaviorSubject(0);
   #gameFinishedSubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  #currentPlayerStrategies: Strategy[];
 
   protected player1PossibleStrategies = 'ABCDEFGHIJKLM'.split('');
   protected player2PossibleStrategies = 'abcdefghijklm'.split('');
+  protected currentPlayerStrategies: Strategy[];
 
   playerScores$: Observable<number[]> = this.#playerScoresSubject.asObservable();
   currentRound$: Observable<number> = this.#roundSubject.asObservable();
@@ -72,19 +72,19 @@ export default abstract class Game {
   }
 
   submitPlayerStrategy(playerIndex: number, strategy: string): void {
-    this.#currentPlayerStrategies[playerIndex] = {
+    this.currentPlayerStrategies[playerIndex] = {
       player: this.players[playerIndex],
       strategy
     };
   }
 
   finishRound(roundResult: number[]): void {
-    const round = new Round(this.#currentPlayerStrategies, roundResult);
+    const round = new Round(this.currentPlayerStrategies, roundResult);
     this.rounds.push(round);
 
     this.players.forEach((player, index) => (player.cookies += roundResult[index]));
 
-    this.#currentPlayerStrategies.fill(undefined);
+    this.currentPlayerStrategies.fill(undefined);
     this.#playerScoresSubject.next(this.players.map(p => p.cookies));
 
     if (this.#roundSubject.value < this.numberOfRounds) {
