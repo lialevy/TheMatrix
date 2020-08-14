@@ -50,6 +50,19 @@
           min="1"
         />
       </mat-form-field>
+
+      X
+
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="gameSettings.gameMatrixDepth"
+          name="gameMatrixDepth"
+          placeholder="depth"
+          min="1"
+        />
+      </mat-form-field>
     </div>
     <div>
       <button
@@ -58,7 +71,6 @@
         color="accent"
         style="width: 100%;"
       >
-        <!-- <a>[routerLink]="'/'"</a> -->
         ready to play
       </button>
     </div>
