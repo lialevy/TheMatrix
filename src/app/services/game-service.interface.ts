@@ -1,21 +1,10 @@
 import { Observable } from 'rxjs';
-import { Matrix, Player, Round, TwoPlayerGame } from '../classes';
-
-export type Game = TwoPlayerGame;
+import { Matrix, Player, Round } from '../classes';
 
 export interface Strategy {
   player: Player;
   strategy: string;
 }
-
-// export interface Matrix {
-//   playersStrategies: string[][];
-//   paymentsMatrix: {
-//     [firstStrategy: string]: {
-//       [secondStrategy: string]: [number, number] | { [thirdStrategy: string]: [number, number, number] }
-//     }
-//   };
-// }
 
 export interface Results {
   scoreTable: (Player & { place?: 1 | 2 | 3 })[];
