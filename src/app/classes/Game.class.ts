@@ -3,6 +3,7 @@ import { Matrix } from '.';
 import { Results, Strategy } from '../services/game-service.interface';
 import Player from './Player.class';
 import Round from './Round.class';
+import { skipWhile } from 'rxjs/operators';
 
 export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
@@ -15,7 +16,9 @@ export default abstract class Game {
 
   playerScores$: Observable<number[]> = this.#playerScoresSubject.asObservable();
   currentRound$: Observable<number> = this.#roundSubject.asObservable();
-  gameFinished$: Observable<boolean> = this.#gameFinishedSubject.asObservable();
+  gameFinished$: Observable<boolean> = this.#gameFinishedSubject.asObservable().pipe(
+    skipWhile(finished => !finished)
+  );
 
   abstract matrix: Matrix;
   players: Player[];
