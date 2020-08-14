@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { GameService } from "src/app/services/game.service";
 import { Observable } from "rxjs";
 import { Matrix } from "src/app/classes";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-game-page",
@@ -17,7 +18,7 @@ export class GamePageComponent implements OnInit {
   displayedColumns: string[];
   dataSource: any;
 
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
     this.gameMatrix = this.gameService.generateRandomMatrixValues();
@@ -43,6 +44,9 @@ export class GamePageComponent implements OnInit {
     });
 
     this.scores$ = this.gameService.getPlayerScoresObservable();
+    this.gameService.gameFinished$.subscribe((_) => {
+      this.router.navigate(["/result"]);
+    });
   }
 
   handleFirstPlayerPick(firstPlayerPickedStrategy) {

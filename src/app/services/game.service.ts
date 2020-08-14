@@ -1,12 +1,16 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Matrix, Player } from '../classes';
-import GameServiceInterface, { Results } from './game-service.interface';
-import { ThreePlayerGameService } from './three-player-game.service';
-import { PlayerGameService, TwoPlayerGameService } from './two-player-game.service';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { skipWhile } from "rxjs/operators";
+import { Matrix, Player } from "../classes";
+import GameServiceInterface, { Results } from "./game-service.interface";
+import { ThreePlayerGameService } from "./three-player-game.service";
+import {
+  PlayerGameService,
+  TwoPlayerGameService,
+} from "./two-player-game.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class GameService implements GameServiceInterface {
   private gameService: PlayerGameService;
@@ -17,7 +21,7 @@ export class GameService implements GameServiceInterface {
   constructor(
     private twoPlayerGameService: TwoPlayerGameService,
     private threePlayerGameService: ThreePlayerGameService
-  ) { }
+  ) {}
 
   setNumberOfPlayers(numberOfPlayers: number): void {
     this.numberOfPlayers = numberOfPlayers;
@@ -25,20 +29,26 @@ export class GameService implements GameServiceInterface {
     if (this.numberOfPlayers === 2) {
       this.gameService = this.twoPlayerGameService;
     } else if (this.numberOfPlayers === 3) {
-      throw new Error('numberOfPlayers=3 not supported');
+      throw new Error("numberOfPlayers=3 not supported");
       // this.gameService = this.threePlayerGameService;
     } else {
-      throw new Error('numberOfPlayers must be 2 or 3');
+      throw new Error("numberOfPlayers must be 2 or 3");
     }
 
-    this.gameFinished$ = this.gameService.gameFinished$;
+    this.gameFinished$ = this.gameService.gameFinished$.pipe(
+      skipWhile((finished) => !finished)
+    );
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
     this.gameService.setNumberOfRounds(numberOfRounds);
   }
 
-  createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix {
+  createGameMatrixByDimensions(
+    rows: number,
+    columns: number,
+    depth?: number
+  ): Matrix {
     return this.gameService.createGameMatrix(rows, columns, depth);
   }
 
@@ -47,7 +57,7 @@ export class GameService implements GameServiceInterface {
   }
 
   setMatrixValues(matrix: Matrix): void {
-    throw new Error('Not supporting manual matrix input');
+    throw new Error("Not supporting manual matrix input");
   }
 
   /**

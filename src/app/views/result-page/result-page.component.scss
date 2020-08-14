@@ -1,0 +1,36 @@
+/* Container holding the image and the text */
+.container {
+  position: relative;
+  text-align: center;
+  color: black;
+  width: 20%;
+  margin: auto;
+}
+
+.first {
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.second {
+  position: absolute;
+  top: 0%;
+  left: 15%;
+  transform: translate(-50%, -50%);
+}
+
+.third {
+  position: absolute;
+  top: 0%;
+  left: 85%;
+  transform: translate(-50%, -50%);
+}
+
+table {
+  margin: auto;
+}
+.mat-cell,
+.mat-header-cell {
+  min-width: 120px;
+}

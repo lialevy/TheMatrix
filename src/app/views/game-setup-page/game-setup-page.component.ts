@@ -28,7 +28,7 @@ export class GameSetupPageComponent implements OnInit {
 
   handleSubmit() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
-    this.gameService.setNumberOfRounds(this.gameSettings.gameMatrixNumOfRows);
+    this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
     this.gameService.createGameMatrixByDimensions(
       this.gameSettings.gameMatrixNumOfRows,
       this.gameSettings.gameMatrixNumOfCols,
