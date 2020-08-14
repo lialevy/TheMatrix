@@ -14,6 +14,7 @@ export interface ThreePlayerMatrix {
 }
 
 export default class ThreePlayerGame extends Game {
+  #player3PossibleStrategies = '01234567890αβγ'.split('');
   #currentPlayerStrategies: [Strategy, Strategy, Strategy] = [
     undefined,
     undefined,
@@ -66,7 +67,7 @@ export default class ThreePlayerGame extends Game {
     }
 
     for (let depthIndex = 0; depthIndex < depth; depthIndex++) {
-      const strategyName = this.player2PossibleStrategies[depthIndex];
+      const strategyName = this.#player3PossibleStrategies[depthIndex];
       thirdPlayerStrategies.push(strategyName);
 
       for (const firstPlayerStrategy in paymentsMatrix) {
