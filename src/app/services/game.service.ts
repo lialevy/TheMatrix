@@ -16,7 +16,9 @@ export class GameService implements GameServiceInterface {
   public gameFinished$: Observable<boolean>;
   public playerTemplates$: Observable<any> = this.#playerTemplatesSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.setNumberOfPlayers(2);
+  }
 
   setNumberOfPlayers(numberOfPlayers: number): void {
     this.numberOfPlayers = numberOfPlayers;
