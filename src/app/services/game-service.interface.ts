@@ -9,16 +9,14 @@ export interface Results {
 export default interface GameServiceInterface {
   gameFinished$: Observable<boolean>;
 
-  // TODO
   setNumberOfPlayers(numberOfPlayers: number): void;
 
-  // TODO
   setNumberOfRounds(numberOfRounds: number): void;
 
-  // TODO
   createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix;
 
-  // TODO
+  createGameMatrixByTemplate(templateName: string): Matrix;
+
   generateRandomMatrixValues(): Matrix;
 
   setMatrixValues(matrix: Matrix): void;

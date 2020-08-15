@@ -44,6 +44,28 @@ export default abstract class Game {
   }
 
   abstract createGameMatrix(rows: number, columns: number, depth: number): Matrix;
+
+  createGameMatrixByTemplate(template: any): Matrix {
+    this.matrix = {
+      playersStrategies: [],
+      paymentsMatrix: template
+    };
+
+    const drillDown = (x: any) => { for (const y in x) { if (x[y]) { return x[y]; } } };
+
+    let currentMatrix = this.matrix.paymentsMatrix;
+    let reducedMatrix = drillDown(drillDown(currentMatrix));
+
+    while (reducedMatrix || Number.isInteger(reducedMatrix)) {
+      this.matrix.playersStrategies.push(Object.keys(currentMatrix));
+
+      currentMatrix = drillDown(currentMatrix);
+      reducedMatrix = drillDown(reducedMatrix);
+    }
+
+    return this.matrix;
+  }
+
   abstract generateRandomMatrixValues(minValue?: number, maxValue?: number): Matrix;
   abstract finalizeGameSetup(): void;
 
