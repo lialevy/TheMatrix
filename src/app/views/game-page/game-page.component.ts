@@ -17,8 +17,6 @@ export class GamePageComponent implements OnInit {
   firstPlayerStrategies: string[];
   secondPlayerStrategies: string[];
   thirdPlayerStrategies: string[];
-  displayedColumns: string[];
-  dataSource: any;
   firstPlayerName: string;
   secondPlayerName: string;
   thirdPlayerName: string;
@@ -42,29 +40,6 @@ export class GamePageComponent implements OnInit {
       this.thirdPlayerStrategies = this.gameMatrix.playersStrategies[2];
       this.thirdPlayerName = this.gameService.getPlayers()[2].name;
     }
-
-    this.dataSource = this.thirdPlayerStrategies.map((matrixStrategy) => {
-      const tableRows = {
-        matrixStrategy: matrixStrategy,
-        matrixRows: this.firstPlayerStrategies.map((rowStrategy) => {
-          const rows = {
-            playerStrategy: rowStrategy,
-          };
-          this.secondPlayerStrategies.forEach((colStrategy) => {
-            rows[colStrategy] = this.gameMatrix.paymentsMatrix[rowStrategy][
-              colStrategy
-            ];
-          });
-          return rows;
-        }),
-      };
-      return tableRows;
-    });
-
-    console.log(this.dataSource);
-    console.log(this.gameMatrix.paymentsMatrix);
-
-    this.displayedColumns = ["playerStrategy", ...this.secondPlayerStrategies];
 
     this.scores$ = this.gameService.getPlayerScoresObservable();
     this.gameService.gameFinished$.subscribe((_) => {

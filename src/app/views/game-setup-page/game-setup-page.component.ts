@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
+import { Matrix } from "src/app/classes";
+import { Observable, Subject } from "rxjs";
 
 export interface GameSettings {
   numberOfPlayers: 2 | 3;
@@ -24,7 +26,21 @@ export class GameSetupPageComponent implements OnInit {
     gameMatrixDepth: 1,
   };
 
+  gameMatrix: Matrix;
+
   constructor(private gameService: GameService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
+    this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
+    this.gameMatrix = this.gameService.createGameMatrixByDimensions(
+      this.gameSettings.gameMatrixNumOfRows,
+      this.gameSettings.gameMatrixNumOfCols,
+      this.gameSettings.gameMatrixDepth
+    );
+
+    this.gameService.finalizeGameSetup();
+  }
 
   handleSubmit() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
@@ -38,5 +54,22 @@ export class GameSetupPageComponent implements OnInit {
     this.router.navigate(["/game"]);
   }
 
-  ngOnInit(): void {}
+  recreateMatrix() {
+    this.gameMatrix = this.gameService.createGameMatrixByDimensions(
+      this.gameSettings.gameMatrixNumOfRows,
+      this.gameSettings.gameMatrixNumOfCols,
+      this.gameSettings.gameMatrixDepth
+    );
+  }
+  handleDimensionChange = this.recreateMatrix;
+
+  handleNumberOfPlayersChange() {
+    this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
+    this.recreateMatrix();
+  }
+
+  // TODO:
+  // 1. user input matrix, stepper
+  // 2. display last round score and strategies in game page, round counter
+  // 3. dropdown list of predefined matrices (for 2 or 3 players)
 }

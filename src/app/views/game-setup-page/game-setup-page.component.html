@@ -5,6 +5,7 @@
       <mat-radio-group
         [(ngModel)]="gameSettings.numberOfPlayers"
         name="numberOfPlayers"
+        (change)="handleNumberOfPlayersChange()"
       >
         <mat-radio-button [value]="2">2</mat-radio-button>
         <mat-radio-button [value]="3">3</mat-radio-button>
@@ -35,6 +36,7 @@
           name="gameMatrixNumOfRows"
           placeholder="rows"
           min="1"
+          (change)="handleDimensionChange()"
         />
       </mat-form-field>
 
@@ -48,21 +50,29 @@
           name="gameMatrixNumOfCols"
           placeholder="cols"
           min="1"
+          (change)="handleDimensionChange()"
         />
       </mat-form-field>
 
-      X
+      <span *ngIf="gameSettings.numberOfPlayers === 3">
+        X
 
-      <mat-form-field>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="gameSettings.gameMatrixDepth"
-          name="gameMatrixDepth"
-          placeholder="depth"
-          min="1"
-        />
-      </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="gameSettings.gameMatrixDepth"
+            name="gameMatrixDepth"
+            placeholder="depth"
+            min="1"
+            (change)="handleDimensionChange()"
+          />
+        </mat-form-field>
+      </span>
+    </div>
+
+    <div *ngIf="gameMatrix">
+      <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
     </div>
 
     <div style="margin-top: 15px;">

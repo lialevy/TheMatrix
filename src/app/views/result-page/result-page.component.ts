@@ -14,23 +14,38 @@ export class ResultPageComponent implements OnInit {
   displayedColumns: String[];
   dataSource: any;
   isTwoPlayersGame: boolean;
-  firstPlayer: Player;
-  secondPlayer: Player;
-  thirdPlayer: Player;
+  // firstPlayer: Player & { place?: 1 | 2 | 3 };
+  // secondPlayer: Player & { place?: 1 | 2 | 3 };
+  // thirdPlayer: Player & { place?: 1 | 2 | 3 };
+  scoreTable: (Player & { place?: 1 | 2 | 3 })[];
+  firstPlacePlayer: (Player & { place?: 1 | 2 | 3 })[];
+  secondPlacePlayer: (Player & { place?: 1 | 2 | 3 })[];
+  thirdPlacePlayer: (Player & { place?: 1 | 2 | 3 })[];
 
   ngOnInit(): void {
     this.gameResults = this.gameService.getGameResults();
     this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
 
-    //TODO: is sorted by cookies??
-    console.log(this.gameResults.scoreTable);
+    // this.firstPlayer = this.gameResults.scoreTable[0];
+    // this.secondPlayer = this.gameResults.scoreTable[1];
+    // if (!this.isTwoPlayersGame) {
+    //   this.thirdPlayer = this.gameResults.scoreTable[2];
+    // }
 
-    this.firstPlayer = this.gameResults.scoreTable[0];
-    this.secondPlayer = this.gameResults.scoreTable[1];
+    this.firstPlacePlayer = [];
+    this.secondPlacePlayer = [];
+    this.thirdPlacePlayer = [];
 
-    if (!this.isTwoPlayersGame) {
-      this.thirdPlayer = this.gameResults.scoreTable[2];
-    }
+    this.scoreTable = this.gameResults.scoreTable;
+    this.scoreTable.forEach((player) => {
+      if (player.place === 1) {
+        this.firstPlacePlayer.push(player);
+      } else if (player.place === 2) {
+        this.secondPlacePlayer.push(player);
+      } else if (player.place === 3) {
+        this.thirdPlacePlayer.push(player);
+      }
+    });
 
     this.displayedColumns = ["Round No.", "Result", "Strategies"];
     let i = 1;
