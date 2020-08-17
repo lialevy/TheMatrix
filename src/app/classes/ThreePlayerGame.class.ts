@@ -1,7 +1,7 @@
 import { Player } from '.';
 import { Results } from '../services/game-service.interface';
 import Strategy from './Strategy.class';
-import Game from './Game.class';
+import Game, { GameType } from './Game.class';
 
 export interface ThreePlayerMatrix {
   playersStrategies?: string[][];
@@ -91,7 +91,11 @@ export default class ThreePlayerGame extends Game {
     return this.matrix;
   }
 
-  generateRandomMatrixValues(minValue: number = 0, maxValue: number = 10): ThreePlayerMatrix {
+  generateRandomMatrixValues(type: GameType = GameType.Normal, minValue: number = 0, maxValue: number = 10): ThreePlayerMatrix {
+    if (type === GameType.ZeroSum) {
+      throw new Error('Three player game cannot be ZeroSum');
+    }
+
     for (const firstPlayerStrategy of this.matrix.playersStrategies[0]) {
       for (const secondPlayerStrategy of this.matrix.playersStrategies[1]) {
         for (const thirdPlayerStrategy of this.matrix.playersStrategies[2]) {

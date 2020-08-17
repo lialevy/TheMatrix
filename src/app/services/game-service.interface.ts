@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { Matrix, Player, Round } from '../classes';
+import { GameType } from '../classes/Game.class';
 
 export interface Results {
   scoreTable: (Player & { place?: 1 | 2 | 3 })[];
@@ -17,7 +18,7 @@ export default interface GameServiceInterface {
 
   createGameMatrixByTemplate(templateName: string): Matrix;
 
-  generateRandomMatrixValues(): Matrix;
+  generateRandomMatrixValues(type: GameType, minValue?, maxValue?): Matrix;
 
   setMatrixValues(matrix: Matrix): void;
 

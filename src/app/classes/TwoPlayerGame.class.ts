@@ -1,5 +1,5 @@
 import Player from './Player.class';
-import Game from './Game.class';
+import Game, { GameType } from './Game.class';
 import Strategy from './Strategy.class';
 import { Results } from '../services/game-service.interface';
 
@@ -71,11 +71,12 @@ export default class TwoPlayerGame extends Game {
     return this.matrix;
   }
 
-  generateRandomMatrixValues(minValue: number = 0, maxValue: number = 10): TwoPlayerMatrix {
+  generateRandomMatrixValues(type: GameType = GameType.Normal, minValue: number = 0, maxValue: number = 10): TwoPlayerMatrix {
     for (const firstPlayerStrategy of this.matrix.playersStrategies[0]) {
       for (const secondPlayerStrategy of this.matrix.playersStrategies[1]) {
         const firstPlayerPayoff = Math.ceil(Math.random() * (maxValue - minValue) + minValue);
-        const secondPlayerPayoff = Math.ceil(Math.random() * (maxValue - minValue) + minValue);
+        const secondPlayerPayoff = type === GameType.ZeroSum ?
+          -firstPlayerPayoff : Math.ceil(Math.random() * (maxValue - minValue) + minValue);
         this.matrix.paymentsMatrix[firstPlayerStrategy][secondPlayerStrategy] = [firstPlayerPayoff, secondPlayerPayoff];
       }
     }
