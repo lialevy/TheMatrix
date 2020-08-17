@@ -15,6 +15,7 @@ export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
   #roundSubject: BehaviorSubject<number> = new BehaviorSubject(0);
   #gameFinishedSubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  #lastRoundSubject: BehaviorSubject<Round> = new BehaviorSubject(undefined);
 
   protected player1PossibleStrategies = 'ABCDEFGHIJKLM'.split('');
   protected player2PossibleStrategies = 'abcdefghijklm'.split('');
@@ -25,6 +26,7 @@ export default abstract class Game {
   gameFinished$: Observable<boolean> = this.#gameFinishedSubject.asObservable().pipe(
     skipWhile(finished => !finished)
   );
+  lastRound$: Observable<Round> = this.#lastRoundSubject.asObservable();
 
   abstract matrix: Matrix;
   players: Player[];
@@ -107,6 +109,7 @@ export default abstract class Game {
   finishRound(roundResult: number[]): void {
     const round = new Round(this.currentPlayerStrategies, roundResult);
     this.rounds.push(round);
+    this.#lastRoundSubject.next(round);
 
     this.players.forEach((player, index) => (player.cookies += roundResult[index]));
 

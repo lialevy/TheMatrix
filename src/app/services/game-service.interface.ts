@@ -12,13 +12,15 @@ export default interface GameServiceInterface {
 
   setNumberOfPlayers(numberOfPlayers: number): void;
 
+  getNumberOfRounds(): number;
+
   setNumberOfRounds(numberOfRounds: number): void;
 
   createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix;
 
   createGameMatrixByTemplate(templateName: string): Matrix;
 
-  generateRandomMatrixValues(type: GameType, minValue?, maxValue?): Matrix;
+  generateRandomMatrixValues(type: GameType, minValue?: number, maxValue?: number): Matrix;
 
   setMatrixValues(matrix: Matrix): void;
 
