@@ -6,6 +6,11 @@ import Round from './Round.class';
 import Strategy from './Strategy.class';
 import { skipWhile, tap } from 'rxjs/operators';
 
+export enum GameType {
+  Normal,
+  ZeroSum
+}
+
 export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
   #roundSubject: BehaviorSubject<number> = new BehaviorSubject(0);
@@ -66,7 +71,7 @@ export default abstract class Game {
     return this.matrix;
   }
 
-  abstract generateRandomMatrixValues(minValue?: number, maxValue?: number): Matrix;
+  abstract generateRandomMatrixValues(type: GameType, minValue?: number, maxValue?: number): Matrix;
   abstract finalizeGameSetup(): void;
 
   validateGame(): [boolean, string[]] {

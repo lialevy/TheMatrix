@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Game, Matrix, Player, ThreePlayerGame, TwoPlayerGame } from '../classes';
+import { GameType } from '../classes/Game.class';
 import Templates from '../templates';
 import GameServiceInterface, { Results } from './game-service.interface';
 
@@ -55,8 +56,8 @@ export class GameService implements GameServiceInterface {
     }
   }
 
-  generateRandomMatrixValues(): Matrix {
-    return this.game.generateRandomMatrixValues();
+  generateRandomMatrixValues(type: GameType = GameType.Normal, minValue = 0, maxValue = 10): Matrix {
+    return this.game.generateRandomMatrixValues(type, minValue, maxValue);
   }
 
   setMatrixValues(matrix: Matrix): void {
