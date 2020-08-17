@@ -1,4 +1,4 @@
-import * as TwoPlayerTemplates from './TwoPlayerTemplates.json';
+import TwoPlayerTemplates from './TwoPlayerTemplates.json';
 
 type TwoPlayerPaymentMatrix = {
   [firstStrategy: string]: {

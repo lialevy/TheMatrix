@@ -34,6 +34,9 @@ export class GameService implements GameServiceInterface {
       throw new Error('numberOfPlayers must be 2 or 3');
     }
 
+    console.log(Templates.TwoPlayerTemplates);
+
+
     this.#playerTemplatesSubject.next(Object.keys(this.#currentTemplates));
     this.gameFinished$ = this.game.gameFinished$;
   }
