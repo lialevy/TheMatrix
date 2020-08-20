@@ -23,14 +23,23 @@ export class GameSetupPageComponent implements OnInit {
     numberOfRounds: 1,
     gameMatrixNumOfRows: 2,
     gameMatrixNumOfCols: 2,
-    gameMatrixDepth: 1,
+    gameMatrixDepth: 2,
   };
 
   gameMatrix: Matrix;
+  //predefinedMatrix: any[];
+  gameMatrixTemplate$: Observable<any>;
 
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
+    this.gameMatrixTemplate$ = this.gameService.playerTemplates$;
+    // TODO: change predefinedMatrix to the options from dor
+    // this.predefinedMatrix = [
+    //   { value: 0, viewValue: "manual" },
+    //   { value: 1, viewValue: "option 1" },
+    //   { value: 2, viewValue: "option 2" },
+    // ];
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
     this.gameMatrix = this.gameService.createGameMatrixByDimensions(
@@ -43,6 +52,7 @@ export class GameSetupPageComponent implements OnInit {
   }
 
   handleSubmit() {
+    //TODO: set predefinedMatrix
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
     this.gameService.createGameMatrixByDimensions(
@@ -67,9 +77,4 @@ export class GameSetupPageComponent implements OnInit {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.recreateMatrix();
   }
-
-  // TODO:
-  // 1. user input matrix, stepper
-  // 2. display last round score and strategies in game page, round counter
-  // 3. dropdown list of predefined matrices (for 2 or 3 players)
 }

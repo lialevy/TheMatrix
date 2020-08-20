@@ -1,6 +1,9 @@
 <!-- scoreBoard -->
 <div>
   <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
+    Round: {{ round$ | async }}
+  </p>
+  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
     Total Score: {{ scores$ | async }}
   </p>
 </div>

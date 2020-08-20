@@ -1,3 +1,6 @@
+<p>
+  {{ gameMatrixTemplate$ | async }}
+</p>
 <div class="gameSetupFormDiv">
   <form name="gameSetupForm" (ngSubmit)="handleSubmit()">
     <div>
@@ -26,6 +29,25 @@
       </mat-form-field>
     </div>
 
+    <!-- dropdown -->
+    <!-- <div>
+      <mat-form-field style="width: 150px;">
+        <mat-label>Predefined Matrix</mat-label>
+        <mat-select
+          [(ngModel)]="gameMatrixDefinition"
+          name="gameMatrixDefinition"
+        >
+          <mat-option
+            *ngFor="let matrix of predefinedMatrix"
+            [value]="matrix.value"
+          >
+            {{ matrix.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div> -->
+
+    <!-- matrix dimension -->
     <div>
       Choose Game Matrix Dimensions
       <mat-form-field>
@@ -71,10 +93,12 @@
       </span>
     </div>
 
+    <!-- game matrix -->
     <div *ngIf="gameMatrix">
       <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
     </div>
 
+    <!-- submit -->
     <div style="margin-top: 15px;">
       <button
         mat-raised-button

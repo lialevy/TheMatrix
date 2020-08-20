@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
 })
 export class GamePageComponent implements OnInit {
   scores$: Observable<number[]>;
+  round$: Observable<number>;
 
   gameMatrix: Matrix;
   isTwoPlayersGame: boolean;
@@ -42,6 +43,8 @@ export class GamePageComponent implements OnInit {
     }
 
     this.scores$ = this.gameService.getPlayerScoresObservable();
+    this.round$ = this.gameService.getRoundNumberObservable();
+
     this.gameService.gameFinished$.subscribe((_) => {
       this.router.navigate(["/result"]);
     });
