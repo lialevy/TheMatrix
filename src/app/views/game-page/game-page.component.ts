@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "src/app/services/game.service";
 import { Observable } from "rxjs";
-import { Matrix } from "src/app/classes";
+import { Matrix, Round } from "src/app/classes";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-game-page",
@@ -10,39 +11,45 @@ import { Matrix } from "src/app/classes";
 })
 export class GamePageComponent implements OnInit {
   scores$: Observable<number[]>;
+  round$: Observable<number>;
+  lastRound$: Observable<Round>;
 
   gameMatrix: Matrix;
+  isTwoPlayersGame: boolean;
   firstPlayerStrategies: string[];
   secondPlayerStrategies: string[];
-  displayedColumns: string[];
-  dataSource: any;
+  thirdPlayerStrategies: string[];
+  firstPlayerName: string;
+  secondPlayerName: string;
+  thirdPlayerName: string;
 
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
     this.gameMatrix = this.gameService.generateRandomMatrixValues();
+    this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
+    this.firstPlayerName = this.gameService.getPlayers()[0].name;
+    this.secondPlayerName = this.gameService.getPlayers()[1].name;
 
     [
       this.firstPlayerStrategies,
       this.secondPlayerStrategies,
     ] = this.gameMatrix.playersStrategies;
 
-    this.displayedColumns = ["playerStrategy", ...this.secondPlayerStrategies];
+    this.thirdPlayerStrategies = ["0"];
 
-    this.dataSource = this.firstPlayerStrategies.map((rowStrategy) => {
-      const tableRows = {
-        playerStrategy: rowStrategy,
-      };
-      this.secondPlayerStrategies.forEach((colStrategy) => {
-        tableRows[colStrategy] = this.gameMatrix.paymentsMatrix[rowStrategy][
-          colStrategy
-        ];
-      });
-
-      return tableRows;
-    });
+    if (!this.isTwoPlayersGame) {
+      this.thirdPlayerStrategies = this.gameMatrix.playersStrategies[2];
+      this.thirdPlayerName = this.gameService.getPlayers()[2].name;
+    }
 
     this.scores$ = this.gameService.getPlayerScoresObservable();
+    this.round$ = this.gameService.getRoundNumberObservable();
+    this.lastRound$ = this.gameService.lastRound$;
+
+    this.gameService.gameFinished$.subscribe((_) => {
+      this.router.navigate(["/result"]);
+    });
   }
 
   handleFirstPlayerPick(firstPlayerPickedStrategy) {
@@ -50,5 +57,8 @@ export class GamePageComponent implements OnInit {
   }
   handleSecondPlayerPick(secondPlayerPickedStrategy) {
     this.gameService.submitPlayerStrategy(1, secondPlayerPickedStrategy);
+  }
+  handleThirdPlayerPick(thirdPlayerPickedStrategy) {
+    this.gameService.submitPlayerStrategy(2, thirdPlayerPickedStrategy);
   }
 }

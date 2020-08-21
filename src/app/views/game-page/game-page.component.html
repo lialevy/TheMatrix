@@ -1,35 +1,57 @@
-<p>{{ scores$ | async }}</p>
+<!-- scoreBoard -->
+<div>
+  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
+    Round: {{ round$ | async }}
+  </p>
+  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
+    Total Score: {{ scores$ | async }}
+  </p>
+</div>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  ual rendered columns are set as a property on the row definition" -->
-
-  <ng-container matColumnDef="playerStrategy">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td
-      class="clickable"
-      (click)="handleFirstPlayerPick(row.playerStrategy)"
-      mat-cell
-      *matCellDef="let row"
+<!-- players pick strategy buttons -->
+<div
+  class="strategyPick"
+  fxLayout="row"
+  fxLayout="row wrap"
+  fxLayoutGap="35px"
+  fxLayoutAlign="center stretch"
+>
+  <div>
+    {{ firstPlayerName }} picks
+    <button
+      *ngFor="let firstPlayerStrategy of firstPlayerStrategies"
+      mat-stroked-button
+      color="primary"
+      (click)="handleFirstPlayerPick(firstPlayerStrategy)"
     >
-      {{ row.playerStrategy }}
-    </td>
-  </ng-container>
-
-  <div *ngFor="let colStrategy of secondPlayerStrategies">
-    <ng-container [matColumnDef]="colStrategy">
-      <th
-        class="clickable"
-        (click)="handleSecondPlayerPick(colStrategy)"
-        mat-header-cell
-        *matHeaderCellDef
-      >
-        {{ colStrategy }}
-      </th>
-      <td mat-cell *matCellDef="let row">{{ row[colStrategy] }}</td>
-    </ng-container>
-    ]
+      {{ firstPlayerStrategy }}
+    </button>
   </div>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-</table>
+  <div>
+    {{ secondPlayerName }} picks
+    <button
+      *ngFor="let secondPlayerStrategy of secondPlayerStrategies"
+      mat-stroked-button
+      color="accent"
+      (click)="handleSecondPlayerPick(secondPlayerStrategy)"
+    >
+      {{ secondPlayerStrategy }}
+    </button>
+  </div>
+
+  <div *ngIf="!isTwoPlayersGame">
+    {{ thirdPlayerName }} picks
+    <button
+      *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
+      mat-stroked-button
+      color="warn"
+      (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
+    >
+      {{ thirdPlayerStrategy }}
+    </button>
+  </div>
+</div>
+
+<!-- game matrix -->
+<app-game-matrix [matrix]="gameMatrix"></app-game-matrix>

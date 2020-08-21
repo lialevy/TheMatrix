@@ -1,5 +1,5 @@
 .gameSetupFormDiv {
-  margin: 0 auto;
+  margin: auto;
   width: 50%;
 }
 .mat-radio-button ~ .mat-radio-button {
@@ -7,7 +7,10 @@
   margin-bottom: 16px;
 }
 .mat-form-field {
-  width: 100px;
+  width: 70px;
   margin-left: 8px;
   margin-right: 8px;
+}
+div {
+  margin-top: 10px;
 }

@@ -1,21 +1,32 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Game, Matrix, Player, Round, ThreePlayerGame, TwoPlayerGame } from '../classes';
-import { GameType } from '../classes/Game.class';
-import Templates from '../templates';
-import GameServiceInterface, { Results } from './game-service.interface';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import {
+  Game,
+  Matrix,
+  Player,
+  Round,
+  ThreePlayerGame,
+  TwoPlayerGame,
+} from "../classes";
+import { GameType } from "../classes/Game.class";
+import Templates from "../templates";
+import GameServiceInterface, { Results } from "./game-service.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class GameService implements GameServiceInterface {
   private game: Game;
   private numberOfPlayers: number;
-  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<
+    string[]
+  >([]);
   #currentTemplates: { [propName: string]: any };
 
   gameFinished$: Observable<boolean>;
-  playerTemplates$: Observable<string[]> = this.#playerTemplatesSubject.asObservable();
+  playerTemplates$: Observable<
+    string[]
+  > = this.#playerTemplatesSubject.asObservable();
   lastRound$: Observable<Round>;
 
   constructor() {
@@ -32,7 +43,7 @@ export class GameService implements GameServiceInterface {
       this.game = new ThreePlayerGame();
       this.#currentTemplates = Templates.ThreePlayerTemplates;
     } else {
-      throw new Error('numberOfPlayers must be 2 or 3');
+      throw new Error("numberOfPlayers must be 2 or 3");
     }
 
     console.log(Templates.TwoPlayerTemplates);
@@ -51,7 +62,11 @@ export class GameService implements GameServiceInterface {
     this.game.setNumberOfRounds(numberOfRounds);
   }
 
-  createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix {
+  createGameMatrixByDimensions(
+    rows: number,
+    columns: number,
+    depth?: number
+  ): Matrix {
     return this.game.createGameMatrix(rows, columns, depth);
   }
 
@@ -65,7 +80,11 @@ export class GameService implements GameServiceInterface {
     }
   }
 
-  generateRandomMatrixValues(type: GameType = GameType.Normal, minValue = 0, maxValue = 10): Matrix {
+  generateRandomMatrixValues(
+    type: GameType = GameType.Normal,
+    minValue = 0,
+    maxValue = 10
+  ): Matrix {
     return this.game.generateRandomMatrixValues(type, minValue, maxValue);
   }
 
