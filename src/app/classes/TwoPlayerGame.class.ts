@@ -115,6 +115,26 @@ export default class TwoPlayerGame extends Game {
     }
   }
 
+  calculateExpectedValues(mixedStrategies: MixedStrategy[]): number[] {
+    const expectedValues: number[] = this.players.map(_ => 0);
+
+    for (const firstStrategy of this.matrix.playersStrategies[0]) {
+      const firstProbability = mixedStrategies[0].strategy.find(strategy => strategy.strategy === firstStrategy).probability;
+
+      for (const secondStrategy of this.matrix.playersStrategies[1]) {
+        const secondProbability = mixedStrategies[1].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+
+        for (const player of this.players) {
+          expectedValues[player.playerNumber] +=
+            firstProbability * secondProbability *
+            this.matrix.paymentsMatrix[firstStrategy][secondStrategy][player.playerNumber as number];
+        }
+      }
+    }
+
+    return expectedValues;
+  }
+
   getGameResults(): Results {
     const [firstPlayer, secondPlayer]: (Player & { place?: 1 | 2 | 3 })[] = this.players;
 
@@ -130,11 +150,12 @@ export default class TwoPlayerGame extends Game {
     }
 
     const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
+    const expectedValues = this.calculateExpectedValues(mixedStrategies);
 
     return {
       scoreTable: [firstPlayer, secondPlayer],
       roundsTable: this.rounds,
-      mixedStrategies
+      mixedStrategies: mixedStrategies.map((mixedStrategy, index) => ({ ...mixedStrategy, expectedValue: expectedValues[index]}))
     };
   }
 }

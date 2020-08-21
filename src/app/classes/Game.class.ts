@@ -138,7 +138,7 @@ export default abstract class Game {
 
       const mixedStrategy = new MixedStrategy(
         player,
-        playerStrategies.map(strategy => ({ 
+        playerStrategies.map(strategy => ({
           strategy,
           probability: strategyCounter[strategy] / this.rounds.length
         }))
