@@ -58,12 +58,12 @@ export default abstract class Game {
       paymentsMatrix: template
     };
 
-    const drillDown = (x: any) => { for (const y in x) { if (x[y]) { return x[y]; } } };
+    const drillDown = (x: any) => { for (const y in x) { if (x[y] !== undefined) { return x[y]; } } };
 
     let currentMatrix = this.matrix.paymentsMatrix;
     let reducedMatrix = drillDown(drillDown(currentMatrix));
 
-    while (reducedMatrix || Number.isInteger(reducedMatrix)) {
+    while (reducedMatrix !== undefined) {
       this.matrix.playersStrategies.push(Object.keys(currentMatrix));
 
       currentMatrix = drillDown(currentMatrix);
