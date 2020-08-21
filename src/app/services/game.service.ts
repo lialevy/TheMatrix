@@ -4,6 +4,7 @@ import {
   Game,
   Matrix,
   Player,
+  Round,
   ThreePlayerGame,
   TwoPlayerGame,
 } from "../classes";
@@ -22,10 +23,11 @@ export class GameService implements GameServiceInterface {
   >([]);
   #currentTemplates: { [propName: string]: any };
 
-  public gameFinished$: Observable<boolean>;
-  public playerTemplates$: Observable<
-    any
+  gameFinished$: Observable<boolean>;
+  playerTemplates$: Observable<
+    string[]
   > = this.#playerTemplatesSubject.asObservable();
+  lastRound$: Observable<Round>;
 
   constructor() {
     this.setNumberOfPlayers(2);
@@ -45,7 +47,12 @@ export class GameService implements GameServiceInterface {
     }
 
     this.#playerTemplatesSubject.next(Object.keys(this.#currentTemplates));
+    this.lastRound$ = this.game.lastRound$;
     this.gameFinished$ = this.game.gameFinished$;
+  }
+
+  getNumberOfRounds(): number {
+    return this.game.numberOfRounds;
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
