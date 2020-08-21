@@ -1,4 +1,4 @@
-import { Player } from '.';
+import { MixedStrategy, Player } from '.';
 import { Results } from '../services/game-service.interface';
 import Strategy from './Strategy.class';
 import Game, { GameType } from './Game.class';
@@ -180,9 +180,12 @@ export default class ThreePlayerGame extends Game {
       ];
     }
 
+    const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
+
     return {
       scoreTable,
-      roundsTable: this.rounds
+      roundsTable: this.rounds,
+      mixedStrategies
     };
   }
 }

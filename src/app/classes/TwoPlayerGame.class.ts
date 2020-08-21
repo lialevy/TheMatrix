@@ -2,6 +2,7 @@ import Player from './Player.class';
 import Game, { GameType } from './Game.class';
 import Strategy from './Strategy.class';
 import { Results } from '../services/game-service.interface';
+import { MixedStrategy } from '.';
 
 export interface TwoPlayerMatrix {
   playersStrategies?: string[][];
@@ -128,9 +129,12 @@ export default class TwoPlayerGame extends Game {
       firstPlayer.place = 2;
     }
 
+    const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
+
     return {
       scoreTable: [firstPlayer, secondPlayer],
-      roundsTable: this.rounds
+      roundsTable: this.rounds,
+      mixedStrategies
     };
   }
 }

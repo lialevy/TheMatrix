@@ -1,10 +1,11 @@
 import { Observable } from 'rxjs';
-import { Matrix, Player, Round } from '../classes';
+import { Matrix, MixedStrategy, Player, Round } from '../classes';
 import { GameType } from '../classes/Game.class';
 
 export interface Results {
   scoreTable: (Player & { place?: 1 | 2 | 3 })[];
   roundsTable: Round[];
+  mixedStrategies: MixedStrategy[];
 }
 
 export default interface GameServiceInterface {
