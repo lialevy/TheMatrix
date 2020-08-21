@@ -129,26 +129,7 @@ export default class TwoPlayerGame extends Game {
       firstPlayer.place = 2;
     }
 
-    const mixedStrategies: MixedStrategy[] = [];
-
-    for (const player of this.players) {
-      const playedStrategies = this.rounds.map(round => round.playedStrategies[player.playerNumber].strategy);
-      const playerStrategies = this.matrix.playersStrategies[player.playerNumber];
-
-      const strategyCounter = playerStrategies.reduce((counter, strategy) => { counter[strategy] = 0; return counter; }, {});
-
-      playedStrategies.forEach(strategy => strategyCounter[strategy]++);
-
-      const mixedStrategy = new MixedStrategy(
-        player,
-        playerStrategies.map(strategy => ({ 
-          strategy,
-          probability: strategyCounter[strategy] / this.rounds.length
-        }))
-      );
-
-      mixedStrategies.push(mixedStrategy);
-    }
+    const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
 
     return {
       scoreTable: [firstPlayer, secondPlayer],
