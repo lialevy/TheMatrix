@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Game, Matrix, Player, ThreePlayerGame, TwoPlayerGame } from '../classes';
+import { Game, Matrix, Player, Round, ThreePlayerGame, TwoPlayerGame } from '../classes';
 import { GameType } from '../classes/Game.class';
 import Templates from '../templates';
 import GameServiceInterface, { Results } from './game-service.interface';
@@ -14,8 +14,9 @@ export class GameService implements GameServiceInterface {
   #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   #currentTemplates: { [propName: string]: any };
 
-  public gameFinished$: Observable<boolean>;
-  public playerTemplates$: Observable<any> = this.#playerTemplatesSubject.asObservable();
+  gameFinished$: Observable<boolean>;
+  playerTemplates$: Observable<string[]> = this.#playerTemplatesSubject.asObservable();
+  lastRound$: Observable<Round>;
 
   constructor() {
     this.setNumberOfPlayers(2);
@@ -38,7 +39,12 @@ export class GameService implements GameServiceInterface {
 
 
     this.#playerTemplatesSubject.next(Object.keys(this.#currentTemplates));
+    this.lastRound$ = this.game.lastRound$;
     this.gameFinished$ = this.game.gameFinished$;
+  }
+
+  getNumberOfRounds(): number {
+    return this.game.numberOfRounds;
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
