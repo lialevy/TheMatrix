@@ -145,6 +145,30 @@ export default class ThreePlayerGame extends Game {
     }
   }
 
+  calculateExpectedValues(mixedStrategies: MixedStrategy[]): number[] {
+    const expectedValues: number[] = this.players.map(_ => 0);
+
+    for (const firstStrategy of this.matrix.playersStrategies[0]) {
+      const firstProbability = mixedStrategies[0].strategy.find(strategy => strategy.strategy === firstStrategy).probability;
+
+      for (const secondStrategy of this.matrix.playersStrategies[1]) {
+        const secondProbability = mixedStrategies[1].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+
+        for (const thirdStrategy of this.matrix.playersStrategies[2]) {
+          const thirdProbability = mixedStrategies[2].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+
+          for (const player of this.players) {
+            expectedValues[player.playerNumber] +=
+              firstProbability * secondProbability * thirdProbability *
+              this.matrix.paymentsMatrix[firstStrategy][secondStrategy][thirdStrategy][player.playerNumber];
+          }
+        }
+      }
+    }
+
+    return expectedValues;
+  }
+
   getGameResults(): Results {
     let scoreTable;
 
