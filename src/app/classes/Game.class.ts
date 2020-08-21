@@ -107,7 +107,9 @@ export default abstract class Game {
   }
 
   finishRound(roundResult: number[]): void {
-    const round = new Round(this.currentPlayerStrategies, roundResult);
+    const pureEquilibrium = this.isPureEquilibrium();
+
+    const round = new Round(this.currentPlayerStrategies, roundResult, pureEquilibrium);
     this.rounds.push(round);
     this.#lastRoundSubject.next(round);
 
@@ -122,6 +124,8 @@ export default abstract class Game {
       this.#gameFinishedSubject.next(true);
     }
   }
+
+  abstract isPureEquilibrium(): boolean;
 
   abstract getGameResults(): Results;
 

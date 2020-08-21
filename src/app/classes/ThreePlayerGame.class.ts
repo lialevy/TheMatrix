@@ -169,6 +169,34 @@ export default class ThreePlayerGame extends Game {
     return expectedValues;
   }
 
+  isPureEquilibrium(): boolean {
+    const [s1, s2, s3] = this.currentPlayerStrategies;
+    const [payoff1, payoff2, payoff3] = this.matrix.paymentsMatrix[s1.strategy][s2.strategy][s3.strategy];
+    const [player1Strategies, player2Strategies, player3Strategies] = this.matrix.playersStrategies;
+
+    // Check if player 1 has a better strategy given s2
+    for (const otherStrategy of player1Strategies.filter(s => s !== s1.strategy)) {
+      const [newPayoff, _, __] = this.matrix.paymentsMatrix[otherStrategy][s2.strategy][s3.strategy];
+
+      if (newPayoff > payoff1) { return false; }
+    }
+
+    // Check if player 2 has a better strategy given s1
+    for (const otherStrategy of player2Strategies.filter(s => s !== s2.strategy)) {
+      const [_, newPayoff, __] = this.matrix.paymentsMatrix[s1.strategy][otherStrategy][s3.strategy];
+
+      if (newPayoff > payoff2) { return false; }
+    }
+
+    for (const otherStrategy of player3Strategies.filter(s => s !== s3.strategy)) {
+      const [_, __, newPayoff] = this.matrix.paymentsMatrix[s1.strategy][otherStrategy][s3.strategy];
+
+      if (newPayoff > payoff3) { return false; }
+    }
+
+    return true;
+  }
+
   getGameResults(): Results {
     let scoreTable;
 
