@@ -1,4 +1,4 @@
-import { Player } from '.';
+import { MixedStrategy, Player } from '.';
 import { Results } from '../services/game-service.interface';
 import Strategy from './Strategy.class';
 import Game, { GameType } from './Game.class';
@@ -145,6 +145,58 @@ export default class ThreePlayerGame extends Game {
     }
   }
 
+  calculateExpectedValues(mixedStrategies: MixedStrategy[]): number[] {
+    const expectedValues: number[] = this.players.map(_ => 0);
+
+    for (const firstStrategy of this.matrix.playersStrategies[0]) {
+      const firstProbability = mixedStrategies[0].strategy.find(strategy => strategy.strategy === firstStrategy).probability;
+
+      for (const secondStrategy of this.matrix.playersStrategies[1]) {
+        const secondProbability = mixedStrategies[1].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+
+        for (const thirdStrategy of this.matrix.playersStrategies[2]) {
+          const thirdProbability = mixedStrategies[2].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+
+          for (const player of this.players) {
+            expectedValues[player.playerNumber] +=
+              firstProbability * secondProbability * thirdProbability *
+              this.matrix.paymentsMatrix[firstStrategy][secondStrategy][thirdStrategy][player.playerNumber];
+          }
+        }
+      }
+    }
+
+    return expectedValues;
+  }
+
+  isPureEquilibrium(): boolean {
+    const [s1, s2, s3] = this.currentPlayerStrategies;
+    const [payoff1, payoff2, payoff3] = this.matrix.paymentsMatrix[s1.strategy][s2.strategy][s3.strategy];
+    const [player1Strategies, player2Strategies, player3Strategies] = this.matrix.playersStrategies;
+
+    // Check if player 1 has a better strategy given s2
+    for (const otherStrategy of player1Strategies.filter(s => s !== s1.strategy)) {
+      const [newPayoff, _, __] = this.matrix.paymentsMatrix[otherStrategy][s2.strategy][s3.strategy];
+
+      if (newPayoff > payoff1) { return false; }
+    }
+
+    // Check if player 2 has a better strategy given s1
+    for (const otherStrategy of player2Strategies.filter(s => s !== s2.strategy)) {
+      const [_, newPayoff, __] = this.matrix.paymentsMatrix[s1.strategy][otherStrategy][s3.strategy];
+
+      if (newPayoff > payoff2) { return false; }
+    }
+
+    for (const otherStrategy of player3Strategies.filter(s => s !== s3.strategy)) {
+      const [_, __, newPayoff] = this.matrix.paymentsMatrix[s1.strategy][otherStrategy][s3.strategy];
+
+      if (newPayoff > payoff3) { return false; }
+    }
+
+    return true;
+  }
+
   getGameResults(): Results {
     let scoreTable;
 
@@ -180,9 +232,13 @@ export default class ThreePlayerGame extends Game {
       ];
     }
 
+    const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
+    const expectedValues = this.calculateExpectedValues(mixedStrategies);
+
     return {
       scoreTable,
-      roundsTable: this.rounds
+      roundsTable: this.rounds,
+      mixedStrategies: mixedStrategies.map((mixedStrategy, index) => ({ ...mixedStrategy, expectedValue: expectedValues[index]}))
     };
   }
 }

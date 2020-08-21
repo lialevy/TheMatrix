@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Matrix } from '.';
+import { Matrix, MixedStrategy } from '.';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
 import Round from './Round.class';
@@ -58,12 +58,12 @@ export default abstract class Game {
       paymentsMatrix: template
     };
 
-    const drillDown = (x: any) => { for (const y in x) { if (x[y]) { return x[y]; } } };
+    const drillDown = (x: any) => { for (const y in x) { if (x[y] !== undefined) { return x[y]; } } };
 
     let currentMatrix = this.matrix.paymentsMatrix;
     let reducedMatrix = drillDown(drillDown(currentMatrix));
 
-    while (reducedMatrix || Number.isInteger(reducedMatrix)) {
+    while (reducedMatrix !== undefined) {
       this.matrix.playersStrategies.push(Object.keys(currentMatrix));
 
       currentMatrix = drillDown(currentMatrix);
@@ -107,7 +107,9 @@ export default abstract class Game {
   }
 
   finishRound(roundResult: number[]): void {
-    const round = new Round(this.currentPlayerStrategies, roundResult);
+    const pureEquilibrium = this.isPureEquilibrium();
+
+    const round = new Round(this.currentPlayerStrategies, roundResult, pureEquilibrium);
     this.rounds.push(round);
     this.#lastRoundSubject.next(round);
 
@@ -123,5 +125,32 @@ export default abstract class Game {
     }
   }
 
+  abstract isPureEquilibrium(): boolean;
+
   abstract getGameResults(): Results;
+
+  protected calculateMixedStrategies(): MixedStrategy[] {
+    const mixedStrategies: MixedStrategy[] = [];
+
+    for (const player of this.players) {
+      const playedStrategies = this.rounds.map(round => round.playedStrategies[player.playerNumber].strategy);
+      const playerStrategies = this.matrix.playersStrategies[player.playerNumber];
+
+      const strategyCounter = playerStrategies.reduce((counter, strategy) => { counter[strategy] = 0; return counter; }, {});
+
+      playedStrategies.forEach(strategy => strategyCounter[strategy]++);
+
+      const mixedStrategy = new MixedStrategy(
+        player,
+        playerStrategies.map(strategy => ({
+          strategy,
+          probability: strategyCounter[strategy] / this.rounds.length
+        }))
+      );
+
+      mixedStrategies.push(mixedStrategy);
+    }
+
+    return mixedStrategies;
+  }
 }
