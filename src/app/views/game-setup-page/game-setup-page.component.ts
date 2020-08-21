@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
 import { Matrix } from "src/app/classes";
@@ -27,19 +33,17 @@ export class GameSetupPageComponent implements OnInit {
   };
 
   gameMatrix: Matrix;
-  //predefinedMatrix: any[];
   gameMatrixTemplate$: Observable<any>;
+  RandomMatrixString: string;
+  gameMatrixTemplate: string;
 
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
+    this.RandomMatrixString = "Random Matrix";
+    this.gameMatrixTemplate = this.RandomMatrixString;
     this.gameMatrixTemplate$ = this.gameService.playerTemplates$;
-    // TODO: change predefinedMatrix to the options from dor
-    // this.predefinedMatrix = [
-    //   { value: 0, viewValue: "manual" },
-    //   { value: 1, viewValue: "option 1" },
-    //   { value: 2, viewValue: "option 2" },
-    // ];
+
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
     this.gameMatrix = this.gameService.createGameMatrixByDimensions(
@@ -47,31 +51,46 @@ export class GameSetupPageComponent implements OnInit {
       this.gameSettings.gameMatrixNumOfCols,
       this.gameSettings.gameMatrixDepth
     );
-
-    this.gameService.finalizeGameSetup();
+    this.gameService.generateRandomMatrixValues();
   }
 
   handleSubmit() {
-    //TODO: set predefinedMatrix
-    this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
+    // this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
-    this.gameService.createGameMatrixByDimensions(
-      this.gameSettings.gameMatrixNumOfRows,
-      this.gameSettings.gameMatrixNumOfCols,
-      this.gameSettings.gameMatrixDepth
-    );
+
+    // if (this.gameMatrixTemplate === "Random Matrix") {
+    //   this.gameService.createGameMatrixByDimensions(
+    //     this.gameSettings.gameMatrixNumOfRows,
+    //     this.gameSettings.gameMatrixNumOfCols,
+    //     this.gameSettings.gameMatrixDepth
+    //   );
+    //   this.gameService.generateRandomMatrixValues();
+    // } else {
+    //   this.gameService.createGameMatrixByTemplate(this.gameMatrixTemplate);
+    // }
+
     this.gameService.finalizeGameSetup();
     this.router.navigate(["/game"]);
   }
 
   recreateMatrix() {
-    this.gameMatrix = this.gameService.createGameMatrixByDimensions(
-      this.gameSettings.gameMatrixNumOfRows,
-      this.gameSettings.gameMatrixNumOfCols,
-      this.gameSettings.gameMatrixDepth
-    );
+    if (this.gameMatrixTemplate !== "Random Matrix") {
+      this.gameMatrix = this.gameService.createGameMatrixByTemplate(
+        this.gameMatrixTemplate
+      );
+    } else {
+      this.gameMatrix = this.gameService.createGameMatrixByDimensions(
+        this.gameSettings.gameMatrixNumOfRows,
+        this.gameSettings.gameMatrixNumOfCols,
+        this.gameSettings.gameMatrixDepth
+      );
+      this.gameService.generateRandomMatrixValues();
+    }
   }
+
   handleDimensionChange = this.recreateMatrix;
+  handleMatrixTemplateChange = this.recreateMatrix;
+  handleMatrixValuesChange = this.recreateMatrix;
 
   handleNumberOfPlayersChange() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);

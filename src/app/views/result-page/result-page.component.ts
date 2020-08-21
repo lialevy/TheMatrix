@@ -11,7 +11,7 @@ import { Results } from "src/app/services/game-service.interface";
 export class ResultPageComponent implements OnInit {
   constructor(private gameService: GameService) {}
   gameResults: Results;
-  displayedColumns: String[];
+  displayedColumns: string[];
   dataSource: any;
   isTwoPlayersGame: boolean;
   // firstPlayer: Player & { place?: 1 | 2 | 3 };

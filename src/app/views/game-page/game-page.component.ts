@@ -26,7 +26,7 @@ export class GamePageComponent implements OnInit {
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
-    this.gameMatrix = this.gameService.generateRandomMatrixValues();
+    this.gameMatrix = this.gameService.getGameMatrix();
     this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
     this.firstPlayerName = this.gameService.getPlayers()[0].name;
     this.secondPlayerName = this.gameService.getPlayers()[1].name;
