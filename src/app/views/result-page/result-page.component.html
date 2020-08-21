@@ -1,1 +1,60 @@
-<p>result-page works!</p>
+<!-- fireworks -->
+<div class="pyro">
+  <div class="before"></div>
+  <div class="after"></div>
+</div>
+
+<!-- podium -->
+<div class="container">
+  <img *ngIf="isTwoPlayersGame" src="assets/podium2.svg" style="width: 100%;" />
+  <img *ngIf="!isTwoPlayersGame" src="assets/podium.svg" style="width: 100%;" />
+
+  <div class="first">
+    <div *ngFor="let player of firstPlacePlayer">
+      {{ player.name }} <br />{{ player.cookies }} cookies
+    </div>
+  </div>
+
+  <div class="second">
+    <div *ngFor="let player of secondPlacePlayer">
+      {{ player.name }} <br />{{ player.cookies }} cookies
+    </div>
+  </div>
+
+  <div class="third">
+    <div *ngFor="let player of thirdPlacePlayer">
+      {{ player.name }} <br />{{ player.cookies }} cookies
+    </div>
+  </div>
+</div>
+
+<!-- score table -->
+<div>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    ual rendered columns are set as a property on the row definition" -->
+
+    <ng-container matColumnDef="Round No.">
+      <th mat-header-cell *matHeaderCellDef>Round No.</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.roundNum }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Result">
+      <th mat-header-cell *matHeaderCellDef>Result</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.result }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Strategies">
+      <th mat-header-cell *matHeaderCellDef>Strategies</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.strategies }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

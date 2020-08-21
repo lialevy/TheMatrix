@@ -8,6 +8,9 @@ import { MatInputModule } from "@angular/material/input";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
+import { MatSelectModule } from "@angular/material/select";
+
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -41,12 +44,14 @@ import { RoundsTableComponent } from "./views/result-page/rounds-table/rounds-ta
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatRadioModule,
     MatButtonModule,
     MatTableModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
