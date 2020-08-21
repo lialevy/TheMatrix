@@ -205,11 +205,12 @@ export default class ThreePlayerGame extends Game {
     }
 
     const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
+    const expectedValues = this.calculateExpectedValues(mixedStrategies);
 
     return {
       scoreTable,
       roundsTable: this.rounds,
-      mixedStrategies
+      mixedStrategies: mixedStrategies.map((mixedStrategy, index) => ({ ...mixedStrategy, expectedValue: expectedValues[index]}))
     };
   }
 }
