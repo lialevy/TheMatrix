@@ -82,7 +82,7 @@ export default abstract class Game {
   }
 
   abstract generateRandomMatrixValues(type: GameType, minValue?: number, maxValue?: number): Matrix;
-  abstract finalizeGameSetup(): void;
+  abstract finalizeGameSetup(playerTypes?: PlayerType[]): void;
 
   validateGame(): [boolean, string[]] {
     const errors: string[] = [];

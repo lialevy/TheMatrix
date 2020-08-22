@@ -102,10 +102,8 @@ export default class ThreePlayerGame extends Game {
     return this.matrix;
   }
 
-  finalizeGameSetup(): void {
-    if (!this.players || this.players.length === 0) {
-      this.createPlayers();
-    }
+  finalizeGameSetup(playerTypes?: [PlayerType, PlayerType, PlayerType]): void {
+    playerTypes ? this.createPlayers(playerTypes) : this.createPlayers();
 
     for (const player of this.players) {
       if (player.type !== PlayerType.Human) {
