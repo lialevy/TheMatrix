@@ -20,7 +20,7 @@ export default interface GameServiceInterface {
 
   createGameMatrixByTemplate(templateName: string): Matrix;
 
-  generateRandomMatrixValues(type: GameType, minValue?: number, maxValue?: number): Matrix;
+  generateRandomMatrixValues(minValue?: number, maxValue?: number, type?: GameType): Matrix;
 
   setMatrixValues(matrix: Matrix): void;
 

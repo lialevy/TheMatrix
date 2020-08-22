@@ -102,9 +102,9 @@ export class GameService implements GameServiceInterface {
   }
 
   generateRandomMatrixValues(
-    type: GameType = GameType.Normal,
     minValue = 0,
-    maxValue = 10
+    maxValue = 10,
+    type: GameType = GameType.Normal
   ): Matrix {
     return this.#game.generateRandomMatrixValues(type, minValue, maxValue);
   }
