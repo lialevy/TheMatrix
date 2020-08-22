@@ -37,6 +37,8 @@ export class GameSetupPageComponent implements OnInit {
   gameMatrixTemplate$: Observable<any>;
   RandomMatrixString: string;
   gameMatrixTemplate: string;
+  randomMatrixMinValue: number;
+  randomMatrixMaxValue: number;
 
   constructor(private gameService: GameService, private router: Router) {}
 
@@ -52,24 +54,14 @@ export class GameSetupPageComponent implements OnInit {
       this.gameSettings.gameMatrixNumOfCols,
       this.gameSettings.gameMatrixDepth
     );
-    this.gameService.generateRandomMatrixValues();
+    this.gameService.generateRandomMatrixValues(
+      this.randomMatrixMinValue,
+      this.randomMatrixMaxValue
+    );
   }
 
   handleSubmit() {
-    // this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
-
-    // if (this.gameMatrixTemplate === "Random Matrix") {
-    //   this.gameService.createGameMatrixByDimensions(
-    //     this.gameSettings.gameMatrixNumOfRows,
-    //     this.gameSettings.gameMatrixNumOfCols,
-    //     this.gameSettings.gameMatrixDepth
-    //   );
-    //   this.gameService.generateRandomMatrixValues();
-    // } else {
-    //   this.gameService.createGameMatrixByTemplate(this.gameMatrixTemplate);
-    // }
-
     this.gameService.finalizeGameSetup();
     this.router.navigate(["/game"]);
   }
@@ -85,7 +77,10 @@ export class GameSetupPageComponent implements OnInit {
         this.gameSettings.gameMatrixNumOfCols,
         this.gameSettings.gameMatrixDepth
       );
-      this.gameService.generateRandomMatrixValues();
+      this.gameService.generateRandomMatrixValues(
+        this.randomMatrixMinValue,
+        this.randomMatrixMaxValue
+      );
     }
   }
 

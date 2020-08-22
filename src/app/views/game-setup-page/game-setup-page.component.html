@@ -52,15 +52,37 @@
         </mat-select>
       </mat-form-field>
 
-      <button
-        class="generateButton"
-        mat-raised-button
-        type="button"
-        color="accent"
-        (click)="handleMatrixValuesChange()"
-      >
-        to generate
-      </button>
+      <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
+        <button
+          class="generateButton"
+          mat-raised-button
+          type="button"
+          color="accent"
+          (click)="handleMatrixValuesChange()"
+        >
+          to generate
+        </button>
+
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="randomMatrixMinValue"
+            name="randomMatrixMinValue"
+            placeholder="Min Value"
+          />
+        </mat-form-field>
+
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="randomMatrixMaxValue"
+            name="randomMatrixMaxValue"
+            placeholder="Max Value"
+          />
+        </mat-form-field>
+      </span>
     </div>
 
     <!-- matrix dimension -->
