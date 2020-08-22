@@ -9,6 +9,7 @@ import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
 import { Matrix } from "src/app/classes";
 import { Observable, Subject } from "rxjs";
+import { NgForm } from "@angular/forms";
 
 export interface GameSettings {
   numberOfPlayers: 2 | 3;

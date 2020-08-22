@@ -1,12 +1,14 @@
 <div class="gameSetupFormDiv">
-  <form name="gameSetupForm" (ngSubmit)="handleSubmit()">
+  <form #gameSetupForm="ngForm" (ngSubmit)="handleSubmit()">
     <div>
       Choose # Of Players:
       <mat-radio-group
         [(ngModel)]="gameSettings.numberOfPlayers"
         name="numberOfPlayers"
+        id="numberOfPlayers"
         (change)="handleNumberOfPlayersChange()"
       >
+        <!-- <mat-radio-button [value]="1">1</mat-radio-button> -->
         <mat-radio-button [value]="2">2</mat-radio-button>
         <mat-radio-button [value]="3">3</mat-radio-button>
       </mat-radio-group>
@@ -19,6 +21,7 @@
           matInput
           type="number"
           [(ngModel)]="gameSettings.numberOfRounds"
+          id="numberOfRounds"
           name="numberOfRounds"
           placeholder="rounds"
           min="1"
@@ -34,6 +37,7 @@
         <mat-select
           [(ngModel)]="gameMatrixTemplate"
           name="gameMatrixTemplate"
+          id="gameMatrixTemplate"
           (selectionChange)="handleMatrixTemplateChange()"
         >
           <mat-option [value]="RandomMatrixString">
@@ -69,10 +73,13 @@
             type="number"
             [(ngModel)]="gameSettings.gameMatrixNumOfRows"
             name="gameMatrixNumOfRows"
+            id="gameMatrixNumOfRows"
             placeholder="rows"
-            min="1"
+            [min]="2"
+            [max]="8"
             (change)="handleDimensionChange()"
           />
+          <mat-error>thbybyby</mat-error>
         </mat-form-field>
 
         X
@@ -84,7 +91,8 @@
             [(ngModel)]="gameSettings.gameMatrixNumOfCols"
             name="gameMatrixNumOfCols"
             placeholder="cols"
-            min="1"
+            min="2"
+            max="8"
             (change)="handleDimensionChange()"
           />
         </mat-form-field>
@@ -99,7 +107,8 @@
               [(ngModel)]="gameSettings.gameMatrixDepth"
               name="gameMatrixDepth"
               placeholder="depth"
-              min="1"
+              min="2"
+              max="8"
               (change)="handleDimensionChange()"
             />
           </mat-form-field>
@@ -108,14 +117,18 @@
     </span>
 
     <!-- game matrix -->
-    <div *ngIf="gameMatrix">
+    <div *ngIf="gameMatrix; else invalidMatrix">
       <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
     </div>
+    <ng-template #invalidMatrix>
+      Invalid
+    </ng-template>
 
     <!-- submit -->
     <div style="margin-top: 15px;">
       <button
         mat-raised-button
+        [disabled]="!gameSetupForm.valid"
         type="submit"
         color="accent"
         style="width: 100%;"

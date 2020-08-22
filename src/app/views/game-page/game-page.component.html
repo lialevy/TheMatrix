@@ -1,12 +1,21 @@
 <!-- scoreBoard -->
-<div>
-  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
-    Round: {{ round$ | async }}
-  </p>
-  <p style="text-align: center; margin: auto; width: 50%; color: saddlebrown;">
-    Total Score: {{ scores$ | async }}
-  </p>
-</div>
+<span class="scoreBoard">
+  <div>
+    <p>Round: {{ round$ | async }}</p>
+    <p>Total Score: {{ scores$ | async }}</p>
+  </div>
+
+  <div *ngIf="lastRound$ | async; let round; of: lastRound$ | async">
+    Last Round Strategies:
+    <span
+      *ngFor="let strategy of round.playedStrategies"
+      style="margin-right: 10px;"
+    >
+      {{ strategy.player.name }} played {{ strategy.strategy }}
+    </span>
+    Round Result Was: {{ round.result }}
+  </div>
+</span>
 
 <!-- players pick strategy buttons -->
 <div
