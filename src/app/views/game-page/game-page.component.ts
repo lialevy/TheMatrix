@@ -26,10 +26,10 @@ export class GamePageComponent implements OnInit {
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
-    this.gameMatrix = this.gameService.getGameMatrix();
-    this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
-    this.firstPlayerName = this.gameService.getPlayers()[0].name;
-    this.secondPlayerName = this.gameService.getPlayers()[1].name;
+    this.gameMatrix = this.gameService.matrix;
+    this.isTwoPlayersGame = this.gameService.players.length === 2;
+    this.firstPlayerName = this.gameService.players[0].name;
+    this.secondPlayerName = this.gameService.players[1].name;
 
     [
       this.firstPlayerStrategies,
@@ -40,11 +40,11 @@ export class GamePageComponent implements OnInit {
 
     if (!this.isTwoPlayersGame) {
       this.thirdPlayerStrategies = this.gameMatrix.playersStrategies[2];
-      this.thirdPlayerName = this.gameService.getPlayers()[2].name;
+      this.thirdPlayerName = this.gameService.players[2].name;
     }
 
-    this.scores$ = this.gameService.getPlayerScoresObservable();
-    this.round$ = this.gameService.getRoundNumberObservable();
+    this.scores$ = this.gameService.playerScores$;
+    this.round$ = this.gameService.currentRoundNumber$;
     this.lastRound$ = this.gameService.lastRound$;
 
     this.gameService.gameFinished$.subscribe((_) => {

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   Game,
   Matrix,
@@ -7,22 +7,26 @@ import {
   Round,
   ThreePlayerGame,
   TwoPlayerGame,
-} from '../classes';
-import { GameType } from '../classes/Game.class';
-import Templates from '../templates';
-import GameServiceInterface, { Results } from './game-service.interface';
+} from "../classes";
+import { GameType } from "../classes/Game.class";
+import Templates from "../templates";
+import GameServiceInterface, { Results } from "./game-service.interface";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class GameService implements GameServiceInterface {
   #game: Game;
   #numberOfPlayers: number;
-  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<
+    string[]
+  >([]);
   #currentTemplates: { [propName: string]: any };
 
   gameFinished$: Observable<boolean>;
-  playerTemplates$: Observable<string[]> = this.#playerTemplatesSubject.asObservable();
+  playerTemplates$: Observable<
+    string[]
+  > = this.#playerTemplatesSubject.asObservable();
   lastRound$: Observable<Round>;
   playerScores$: Observable<number[]>;
   currentRoundNumber$: Observable<number>;
@@ -57,7 +61,7 @@ export class GameService implements GameServiceInterface {
       this.#game = new ThreePlayerGame();
       this.#currentTemplates = Templates.ThreePlayerTemplates;
     } else {
-      throw new Error('numberOfPlayers must be 2 or 3');
+      throw new Error("numberOfPlayers must be 2 or 3");
     }
 
     this.#playerTemplatesSubject.next(Object.keys(this.#currentTemplates));

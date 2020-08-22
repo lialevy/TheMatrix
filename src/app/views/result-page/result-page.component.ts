@@ -26,7 +26,7 @@ export class ResultPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameResults = this.gameService.getGameResults();
-    this.isTwoPlayersGame = this.gameService.getPlayers().length === 2;
+    this.isTwoPlayersGame = this.gameService.players.length === 2;
 
     //podium
     this.firstPlacePlayer = [];
