@@ -2,14 +2,21 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Matrix, MixedStrategy } from '.';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
+import { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
+import PlayerType from './PlayerType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
 
 export enum GameType {
   Normal,
   ZeroSum
 }
+
+const playerTypeClasses = {};
+playerTypeClasses[PlayerType.Human] = Player;
+playerTypeClasses[PlayerType.Random] = RandomComputerPlayer;
+playerTypeClasses[PlayerType.MaxMin] = MaxMinComputerPlayer;
 
 export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
@@ -35,11 +42,14 @@ export default abstract class Game {
 
   constructor() { }
 
-  createPlayers(numberOfPlayers): void {
+  createPlayers(numberOfPlayers: number, playerTypes?: PlayerType[]): void {
     this.players = [];
 
     for (let playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) {
-      this.players.push(new Player(playerIndex as 0 | 1 | 2));
+      const playerType = playerTypes ? playerTypes[playerIndex] : PlayerType.Human;
+      const playerClass = playerTypeClasses[playerType];
+
+      this.players.push(new playerClass(playerIndex as 0 | 1 | 2));
     }
 
     this.#playerScoresSubject.next(this.players.map(p => p.cookies));
