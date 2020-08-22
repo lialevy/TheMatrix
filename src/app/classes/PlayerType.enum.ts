@@ -1,6 +1,7 @@
 enum PlayerType {
   Human,
   Random,
+  MinMax,
   MaxMin
 }
 

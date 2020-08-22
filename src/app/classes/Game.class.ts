@@ -1,16 +1,24 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Matrix, MixedStrategy } from '.';
+import { MixedStrategy, ThreePlayerMatrix } from '.';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
-import { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
+import ComputerPlayer, { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
 import PlayerType from './PlayerType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
+import { TwoPlayerMatrix } from './TwoPlayerGame.class';
 
 export enum GameType {
   Normal,
   ZeroSum
+}
+
+export abstract class Matrix {
+  playersStrategies?: string[][];
+  paymentsMatrix?: any;
+
+  abstract flatten(): { strategies: string[], payoff: number[] }[];
 }
 
 const playerTypeClasses = {};
@@ -42,7 +50,7 @@ export default abstract class Game {
 
   constructor() { }
 
-  createPlayers(numberOfPlayers: number, playerTypes?: PlayerType[]): void {
+  createPlayers(playerTypes: PlayerType[], numberOfPlayers: number): void {
     this.players = [];
 
     for (let playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) {
@@ -63,10 +71,9 @@ export default abstract class Game {
   abstract createGameMatrix(rows: number, columns: number, depth: number): Matrix;
 
   createGameMatrixByTemplate(template: any): Matrix {
-    this.matrix = {
-      playersStrategies: [],
-      paymentsMatrix: template
-    };
+    this.matrix = (this.players.length === 2) ? new TwoPlayerMatrix() : new ThreePlayerMatrix();
+    this.matrix.playersStrategies = [];
+    this.matrix.paymentsMatrix = template;
 
     const drillDown = (x: any) => { for (const y in x) { if (x[y] !== undefined) { return x[y]; } } };
 
@@ -109,14 +116,28 @@ export default abstract class Game {
     return [(errors.length > 0), errors];
   }
 
-  submitPlayerStrategy(playerIndex: number, strategy: string): void {
+  submitPlayerStrategy(playerIndex: number, strategy: string): boolean {
     this.currentPlayerStrategies[playerIndex] = {
       player: this.players[playerIndex],
       strategy
     };
+
+    return this.players.reduce(
+      (prev, curr) =>
+        prev &&
+        (curr.type !== PlayerType.Human ||
+          this.currentPlayerStrategies[curr.playerNumber] !== undefined),
+      true
+    );
   }
 
   finishRound(roundResult: number[]): void {
+    for (const player of this.players) {
+      if (player.type !== PlayerType.Human) {
+        this.currentPlayerStrategies[player.playerNumber] = new Strategy(player, (player as ComputerPlayer).play());
+      }
+    }
+
     const pureEquilibrium = this.isPureEquilibrium();
 
     const round = new Round(this.currentPlayerStrategies, roundResult, pureEquilibrium);
