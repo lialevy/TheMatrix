@@ -1,25 +1,16 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MixedStrategy, ThreePlayerMatrix } from '.';
+import MixedStrategy from './MixedStrategy.class';
+import ThreePlayerMatrix from './ThreePlayerMatrix.class';
+import TwoPlayerMatrix from './TwoPlayerMatrix.class';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
 import ComputerPlayer, { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
 import PlayerType from './PlayerType.enum';
+import GameType from './GameType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
-import { TwoPlayerMatrix } from './TwoPlayerGame.class';
-
-export enum GameType {
-  Normal,
-  ZeroSum
-}
-
-export abstract class Matrix {
-  playersStrategies?: string[][];
-  paymentsMatrix?: any;
-
-  abstract flatten(): { strategies: string[], payoff: number[] }[];
-}
+import Matrix from './Matrix.class';
 
 const playerTypeClasses = {};
 playerTypeClasses[PlayerType.Human] = Player;

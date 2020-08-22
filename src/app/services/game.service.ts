@@ -7,8 +7,8 @@ import {
   Round,
   ThreePlayerGame,
   TwoPlayerGame,
+  GameType
 } from '../classes';
-import { GameType } from '../classes/Game.class';
 import Templates from '../templates';
 import GameServiceInterface, { Results } from './game-service.interface';
 

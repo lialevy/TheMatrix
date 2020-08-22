@@ -1,39 +1,12 @@
-import { MixedStrategy, Player } from '.';
 import { Results } from '../services/game-service.interface';
 import Strategy from './Strategy.class';
-import Game, { GameType } from './Game.class';
+import Game from './Game.class';
+import GameType from './GameType.enum';
 import PlayerType from './PlayerType.enum';
 import ComputerPlayer from './ComputerPlayers.class';
-
-export class ThreePlayerMatrix {
-  playersStrategies?: string[][];
-  paymentsMatrix?: {
-    [firstStrategy: string]: {
-      [secondStrategy: string]: {
-        [thirdStrategy: string]: [number, number, number];
-      };
-    };
-  };
-
-  flatten(): { strategies: string[], payoff: number[] }[] {
-    const [p1Strategies, p2Strategies, p3Strategies] = this.playersStrategies;
-
-    const flattenedMatrix = [];
-
-    for (const s1 of p1Strategies) {
-      for (const s2 of p2Strategies) {
-        for (const s3 of p3Strategies) {
-          flattenedMatrix.push({
-            strategies: [s1, s2, s3],
-            payoff: this.paymentsMatrix[s1][s2][s3]
-          });
-        }
-      }
-    }
-
-    return flattenedMatrix;
-  }
-}
+import ThreePlayerMatrix from './ThreePlayerMatrix.class';
+import MixedStrategy from './MixedStrategy.class';
+import Player from './Player.class';
 
 export default class ThreePlayerGame extends Game {
   #player3PossibleStrategies = '01234567890αβγ'.split('');

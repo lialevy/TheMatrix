@@ -1,10 +1,15 @@
-import Game, { Matrix } from './Game.class';
-import TwoPlayerGame, { TwoPlayerMatrix } from './TwoPlayerGame.class';
-import ThreePlayerGame, { ThreePlayerMatrix } from './ThreePlayerGame.class';
+import Game from './Game.class';
+import Matrix from './Matrix.class';
+import TwoPlayerGame from './TwoPlayerGame.class';
+import TwoPlayerMatrix from './TwoPlayerMatrix.class';
+import ThreePlayerGame from './ThreePlayerGame.class';
+import ThreePlayerMatrix from './ThreePlayerMatrix.class';
 import Player from './Player.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
 import MixedStrategy from './MixedStrategy.class';
+import PlayerType from './PlayerType.enum';
+import GameType from './GameType.enum';
 
 export {
   Game,
@@ -17,4 +22,6 @@ export {
   Round,
   Strategy,
   MixedStrategy,
+  GameType,
+  PlayerType
 };
