@@ -7,10 +7,10 @@ import {
   Round,
   ThreePlayerGame,
   TwoPlayerGame,
-} from "../classes";
-import { GameType } from "../classes/Game.class";
-import Templates from "../templates";
-import GameServiceInterface, { Results } from "./game-service.interface";
+  GameType
+} from '../classes';
+import Templates from '../templates';
+import GameServiceInterface, { Results } from './game-service.interface';
 
 @Injectable({
   providedIn: "root",

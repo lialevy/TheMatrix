@@ -1,18 +1,12 @@
-import { MixedStrategy, Player } from '.';
 import { Results } from '../services/game-service.interface';
 import Strategy from './Strategy.class';
-import Game, { GameType } from './Game.class';
-
-export interface ThreePlayerMatrix {
-  playersStrategies?: string[][];
-  paymentsMatrix?: {
-    [firstStrategy: string]: {
-      [secondStrategy: string]: {
-        [thirdStrategy: string]: [number, number, number];
-      };
-    };
-  };
-}
+import Game from './Game.class';
+import GameType from './GameType.enum';
+import PlayerType from './PlayerType.enum';
+import ComputerPlayer from './ComputerPlayers.class';
+import ThreePlayerMatrix from './ThreePlayerMatrix.class';
+import MixedStrategy from './MixedStrategy.class';
+import Player from './Player.class';
 
 export default class ThreePlayerGame extends Game {
   #player3PossibleStrategies = '01234567890αβγ'.split('');
@@ -30,19 +24,14 @@ export default class ThreePlayerGame extends Game {
 
     this.createPlayers();
 
-    this.matrix = matrix
-      ? matrix
-      : {
-          playersStrategies: undefined,
-          paymentsMatrix: undefined,
-        };
+    this.matrix = matrix ? matrix : new ThreePlayerMatrix();
 
     this.numberOfRounds = numberOfRounds;
     this.rounds = [];
   }
 
-  createPlayers(): void {
-    super.createPlayers(3);
+  createPlayers(playerTypes: [PlayerType, PlayerType, PlayerType] = [PlayerType.Human, PlayerType.Human, PlayerType.Human]): void {
+    super.createPlayers(playerTypes, 3);
   }
 
   createGameMatrix(rows: number, columns: number, depth: number): ThreePlayerMatrix {
@@ -83,10 +72,9 @@ export default class ThreePlayerGame extends Game {
       }
     }
 
-    this.matrix = {
-      playersStrategies: [firstPlayerStrategies, secondPlayerStrategies, thirdPlayerStrategies],
-      paymentsMatrix
-    };
+    this.matrix = new ThreePlayerMatrix();
+    this.matrix.playersStrategies = [firstPlayerStrategies, secondPlayerStrategies, thirdPlayerStrategies];
+    this.matrix.paymentsMatrix = paymentsMatrix;
 
     return this.matrix;
   }
@@ -118,6 +106,12 @@ export default class ThreePlayerGame extends Game {
     if (!this.players || this.players.length === 0) {
       this.createPlayers();
     }
+
+    for (const player of this.players) {
+      if (player.type !== PlayerType.Human) {
+        (player as ComputerPlayer).finalize(this.matrix);
+      }
+    }
   }
 
   validateGame(): [boolean, string[]] {
@@ -130,19 +124,17 @@ export default class ThreePlayerGame extends Game {
     return [(errors.length > 0), errors];
   }
 
-  submitPlayerStrategy(playerIndex: number, strategy: string): void {
-    super.submitPlayerStrategy(playerIndex, strategy);
+  submitPlayerStrategy(playerIndex: number, strategy: string): boolean {
+    const roundFinished = super.submitPlayerStrategy(playerIndex, strategy);
 
-    if (
-      this.currentPlayerStrategies[0] !== undefined &&
-      this.currentPlayerStrategies[1] !== undefined &&
-      this.currentPlayerStrategies[2] !== undefined
-    ) {
+    if (roundFinished) {
       const [s1, s2, s3] = this.currentPlayerStrategies;
       const roundResult = this.matrix.paymentsMatrix[s1.strategy][s2.strategy][s3.strategy];
 
       super.finishRound(roundResult);
     }
+
+    return roundFinished;
   }
 
   calculateExpectedValues(mixedStrategies: MixedStrategy[]): number[] {

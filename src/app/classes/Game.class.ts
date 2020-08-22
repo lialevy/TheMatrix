@@ -1,15 +1,21 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Matrix, MixedStrategy } from '.';
+import MixedStrategy from './MixedStrategy.class';
+import ThreePlayerMatrix from './ThreePlayerMatrix.class';
+import TwoPlayerMatrix from './TwoPlayerMatrix.class';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
+import ComputerPlayer, { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
+import PlayerType from './PlayerType.enum';
+import GameType from './GameType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
+import Matrix from './Matrix.class';
 
-export enum GameType {
-  Normal,
-  ZeroSum
-}
+const playerTypeClasses = {};
+playerTypeClasses[PlayerType.Human] = Player;
+playerTypeClasses[PlayerType.Random] = RandomComputerPlayer;
+playerTypeClasses[PlayerType.MaxMin] = MaxMinComputerPlayer;
 
 export default abstract class Game {
   #playerScoresSubject: BehaviorSubject<number[]> = new BehaviorSubject([]);
@@ -35,11 +41,14 @@ export default abstract class Game {
 
   constructor() { }
 
-  createPlayers(numberOfPlayers): void {
+  createPlayers(playerTypes: PlayerType[], numberOfPlayers: number): void {
     this.players = [];
 
     for (let playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) {
-      this.players.push(new Player(playerIndex as 0 | 1 | 2));
+      const playerType = playerTypes ? playerTypes[playerIndex] : PlayerType.Human;
+      const playerClass = playerTypeClasses[playerType];
+
+      this.players.push(new playerClass(playerIndex as 0 | 1 | 2));
     }
 
     this.#playerScoresSubject.next(this.players.map(p => p.cookies));
@@ -53,10 +62,9 @@ export default abstract class Game {
   abstract createGameMatrix(rows: number, columns: number, depth: number): Matrix;
 
   createGameMatrixByTemplate(template: any): Matrix {
-    this.matrix = {
-      playersStrategies: [],
-      paymentsMatrix: template
-    };
+    this.matrix = (this.players.length === 2) ? new TwoPlayerMatrix() : new ThreePlayerMatrix();
+    this.matrix.playersStrategies = [];
+    this.matrix.paymentsMatrix = template;
 
     const drillDown = (x: any) => { for (const y in x) { if (x[y] !== undefined) { return x[y]; } } };
 
@@ -99,14 +107,28 @@ export default abstract class Game {
     return [(errors.length > 0), errors];
   }
 
-  submitPlayerStrategy(playerIndex: number, strategy: string): void {
+  submitPlayerStrategy(playerIndex: number, strategy: string): boolean {
     this.currentPlayerStrategies[playerIndex] = {
       player: this.players[playerIndex],
       strategy
     };
+
+    return this.players.reduce(
+      (prev, curr) =>
+        prev &&
+        (curr.type !== PlayerType.Human ||
+          this.currentPlayerStrategies[curr.playerNumber] !== undefined),
+      true
+    );
   }
 
   finishRound(roundResult: number[]): void {
+    for (const player of this.players) {
+      if (player.type !== PlayerType.Human) {
+        this.currentPlayerStrategies[player.playerNumber] = new Strategy(player, (player as ComputerPlayer).play());
+      }
+    }
+
     const pureEquilibrium = this.isPureEquilibrium();
 
     const round = new Round(this.currentPlayerStrategies, roundResult, pureEquilibrium);
