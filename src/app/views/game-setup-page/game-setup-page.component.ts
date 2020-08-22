@@ -46,6 +46,8 @@ export class GameSetupPageComponent implements OnInit {
   ngOnInit(): void {
     this.RandomMatrixString = "Random Matrix";
     this.gameType = 0;
+    this.randomMatrixMinValue = 0;
+    this.randomMatrixMaxValue = 10;
     this.gameMatrixTemplate = this.RandomMatrixString;
     this.gameMatrixTemplate$ = this.gameService.playerTemplates$;
 
