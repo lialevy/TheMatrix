@@ -7,7 +7,7 @@ import {
   Round,
   ThreePlayerGame,
   TwoPlayerGame,
-  GameType
+  GameType, PlayerType
 } from '../classes';
 import Templates from '../templates';
 import { Results } from './game-service.interface';
@@ -108,8 +108,8 @@ export class GameService {
   /**
    * Validate game is ready and finalize game creation if required
    */
-  finalizeGameSetup(): [boolean, string[]] {
-    this.#game.finalizeGameSetup();
+  finalizeGameSetup(playerTypes?: PlayerType[]): [boolean, string[]] {
+    this.#game.finalizeGameSetup(playerTypes);
     return this.#game.validateGame();
   }
 
