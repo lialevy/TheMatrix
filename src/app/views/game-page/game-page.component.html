@@ -5,7 +5,7 @@
     <p>Total Score: {{ scores$ | async }}</p>
   </div>
 
-  <div *ngIf="lastRound$ | async; let round; of: lastRound$ | async">
+  <div *ngIf="lastRound$ | async as round">
     Last Round Strategies:
     <span
       *ngFor="let strategy of round.playedStrategies"
