@@ -8,7 +8,6 @@
         id="numberOfPlayers"
         (change)="handleNumberOfPlayersChange()"
       >
-        <!-- <mat-radio-button [value]="1">1</mat-radio-button> -->
         <mat-radio-button [value]="2">2</mat-radio-button>
         <mat-radio-button [value]="3">3</mat-radio-button>
       </mat-radio-group>
@@ -54,13 +53,14 @@
 
       <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
         <button
+          mat-icon-button
+          color="accent"
           class="generateButton"
           mat-raised-button
           type="button"
-          color="accent"
           (click)="handleMatrixValuesChange()"
         >
-          to generate
+          <mat-icon> refresh </mat-icon>
         </button>
 
         <mat-form-field>
@@ -135,6 +135,20 @@
             />
           </mat-form-field>
         </span>
+      </div>
+
+      <div>
+        Choose Game Type:
+        <mat-radio-group
+          [(ngModel)]="gameType"
+          name="gameType"
+          id="gameType"
+          (change)="handleGameTypeChange()"
+          [disabled]="gameSettings.numberOfPlayers === 3"
+        >
+          <mat-radio-button [value]="0">Normal</mat-radio-button>
+          <mat-radio-button [value]="1">ZeroSum</mat-radio-button>
+        </mat-radio-group>
       </div>
     </span>
 

@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
-import { Matrix } from "src/app/classes";
+import { Matrix, GameType } from "src/app/classes";
 import { Observable, Subject } from "rxjs";
 import { NgForm } from "@angular/forms";
 
@@ -39,11 +39,13 @@ export class GameSetupPageComponent implements OnInit {
   gameMatrixTemplate: string;
   randomMatrixMinValue: number;
   randomMatrixMaxValue: number;
+  gameType: GameType;
 
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
     this.RandomMatrixString = "Random Matrix";
+    this.gameType = 0;
     this.gameMatrixTemplate = this.RandomMatrixString;
     this.gameMatrixTemplate$ = this.gameService.playerTemplates$;
 
@@ -56,7 +58,8 @@ export class GameSetupPageComponent implements OnInit {
     );
     this.gameService.generateRandomMatrixValues(
       this.randomMatrixMinValue,
-      this.randomMatrixMaxValue
+      this.randomMatrixMaxValue,
+      this.gameType
     );
   }
 
@@ -79,7 +82,8 @@ export class GameSetupPageComponent implements OnInit {
       );
       this.gameService.generateRandomMatrixValues(
         this.randomMatrixMinValue,
-        this.randomMatrixMaxValue
+        this.randomMatrixMaxValue,
+        this.gameType
       );
     }
   }
@@ -87,9 +91,11 @@ export class GameSetupPageComponent implements OnInit {
   handleDimensionChange = this.recreateMatrix;
   handleMatrixTemplateChange = this.recreateMatrix;
   handleMatrixValuesChange = this.recreateMatrix;
+  handleGameTypeChange = this.recreateMatrix;
 
   handleNumberOfPlayersChange() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
+    this.gameType = 0;
     this.recreateMatrix();
   }
 }
