@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
 import { MatSelectModule } from "@angular/material/select";
+import { MatIconModule } from "@angular/material/icon";
 
 import { FlexLayoutModule } from "@angular/flex-layout";
 
@@ -53,6 +54,7 @@ import { RoundsTableComponent } from "./views/result-page/rounds-table/rounds-ta
     MatButtonModule,
     MatTableModule,
     MatSelectModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
