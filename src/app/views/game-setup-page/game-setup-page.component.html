@@ -1,27 +1,27 @@
-<p>
-  {{ gameMatrixTemplate$ | async }}
-</p>
 <div class="gameSetupFormDiv">
-  <form name="gameSetupForm" (ngSubmit)="handleSubmit()">
+  <form #gameSetupForm="ngForm" (ngSubmit)="handleSubmit()">
     <div>
       Choose # Of Players:
       <mat-radio-group
         [(ngModel)]="gameSettings.numberOfPlayers"
         name="numberOfPlayers"
+        id="numberOfPlayers"
         (change)="handleNumberOfPlayersChange()"
       >
+        <!-- <mat-radio-button [value]="1">1</mat-radio-button> -->
         <mat-radio-button [value]="2">2</mat-radio-button>
         <mat-radio-button [value]="3">3</mat-radio-button>
       </mat-radio-group>
     </div>
 
     <div>
-      Choose # Of Rounds
+      Choose # Of Rounds:
       <mat-form-field>
         <input
           matInput
           type="number"
           [(ngModel)]="gameSettings.numberOfRounds"
+          id="numberOfRounds"
           name="numberOfRounds"
           placeholder="rounds"
           min="1"
@@ -30,78 +30,127 @@
     </div>
 
     <!-- dropdown -->
-    <!-- <div>
-      <mat-form-field style="width: 150px;">
-        <mat-label>Predefined Matrix</mat-label>
+    <div>
+      Choose Game Matrix From List:
+      <mat-form-field style="width: 200px;">
+        <mat-label>Game Matrix Template</mat-label>
         <mat-select
-          [(ngModel)]="gameMatrixDefinition"
-          name="gameMatrixDefinition"
+          [(ngModel)]="gameMatrixTemplate"
+          name="gameMatrixTemplate"
+          id="gameMatrixTemplate"
+          (selectionChange)="handleMatrixTemplateChange()"
         >
+          <mat-option [value]="RandomMatrixString">
+            {{ RandomMatrixString }}
+          </mat-option>
           <mat-option
-            *ngFor="let matrix of predefinedMatrix"
-            [value]="matrix.value"
+            *ngFor="let matrix of gameMatrixTemplate$ | async"
+            [value]="matrix"
           >
-            {{ matrix.viewValue }}
+            {{ matrix }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </div> -->
+
+      <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
+        <button
+          class="generateButton"
+          mat-raised-button
+          type="button"
+          color="accent"
+          (click)="handleMatrixValuesChange()"
+        >
+          to generate
+        </button>
+
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="randomMatrixMinValue"
+            name="randomMatrixMinValue"
+            placeholder="Min Value"
+          />
+        </mat-form-field>
+
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="randomMatrixMaxValue"
+            name="randomMatrixMaxValue"
+            placeholder="Max Value"
+          />
+        </mat-form-field>
+      </span>
+    </div>
 
     <!-- matrix dimension -->
-    <div>
-      Choose Game Matrix Dimensions
-      <mat-form-field>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="gameSettings.gameMatrixNumOfRows"
-          name="gameMatrixNumOfRows"
-          placeholder="rows"
-          min="1"
-          (change)="handleDimensionChange()"
-        />
-      </mat-form-field>
+    <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
+      <div>
+        Choose Game Matrix Dimensions
+        <mat-form-field>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="gameSettings.gameMatrixNumOfRows"
+            name="gameMatrixNumOfRows"
+            id="gameMatrixNumOfRows"
+            placeholder="rows"
+            [min]="2"
+            [max]="8"
+            (change)="handleDimensionChange()"
+          />
+          <mat-error>thbybyby</mat-error>
+        </mat-form-field>
 
-      X
-
-      <mat-form-field>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="gameSettings.gameMatrixNumOfCols"
-          name="gameMatrixNumOfCols"
-          placeholder="cols"
-          min="1"
-          (change)="handleDimensionChange()"
-        />
-      </mat-form-field>
-
-      <span *ngIf="gameSettings.numberOfPlayers === 3">
         X
 
         <mat-form-field>
           <input
             matInput
             type="number"
-            [(ngModel)]="gameSettings.gameMatrixDepth"
-            name="gameMatrixDepth"
-            placeholder="depth"
-            min="1"
+            [(ngModel)]="gameSettings.gameMatrixNumOfCols"
+            name="gameMatrixNumOfCols"
+            placeholder="cols"
+            min="2"
+            max="8"
             (change)="handleDimensionChange()"
           />
         </mat-form-field>
-      </span>
-    </div>
+
+        <span *ngIf="gameSettings.numberOfPlayers === 3">
+          X
+
+          <mat-form-field>
+            <input
+              matInput
+              type="number"
+              [(ngModel)]="gameSettings.gameMatrixDepth"
+              name="gameMatrixDepth"
+              placeholder="depth"
+              min="2"
+              max="8"
+              (change)="handleDimensionChange()"
+            />
+          </mat-form-field>
+        </span>
+      </div>
+    </span>
 
     <!-- game matrix -->
-    <div *ngIf="gameMatrix">
+    <div *ngIf="gameMatrix; else invalidMatrix">
       <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
     </div>
+    <ng-template #invalidMatrix>
+      Invalid
+    </ng-template>
 
     <!-- submit -->
     <div style="margin-top: 15px;">
       <button
         mat-raised-button
+        [disabled]="!gameSetupForm.valid"
         type="submit"
         color="accent"
         style="width: 100%;"
