@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   Game,
   Matrix,
@@ -10,12 +10,12 @@ import {
   GameType
 } from '../classes';
 import Templates from '../templates';
-import GameServiceInterface, { Results } from './game-service.interface';
+import { Results } from './game-service.interface';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
-export class GameService implements GameServiceInterface {
+export class GameService {
   #game: Game;
   #numberOfPlayers: number;
   #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<
@@ -61,7 +61,7 @@ export class GameService implements GameServiceInterface {
       this.#game = new ThreePlayerGame();
       this.#currentTemplates = Templates.ThreePlayerTemplates;
     } else {
-      throw new Error("numberOfPlayers must be 2 or 3");
+      throw new Error('numberOfPlayers must be 2 or 3');
     }
 
     this.#playerTemplatesSubject.next(Object.keys(this.#currentTemplates));
@@ -69,14 +69,6 @@ export class GameService implements GameServiceInterface {
     this.gameFinished$ = this.#game.gameFinished$;
     this.playerScores$ = this.#game.playerScores$;
     this.currentRoundNumber$ = this.#game.currentRound$;
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use numberOfRounds instead
-   */
-  getNumberOfRounds(): number {
-    return this.#game.numberOfRounds;
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
@@ -119,46 +111,6 @@ export class GameService implements GameServiceInterface {
   finalizeGameSetup(): [boolean, string[]] {
     this.#game.finalizeGameSetup();
     return this.#game.validateGame();
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use players instead
-   */
-  getPlayers(): Player[] {
-    return this.#game.players;
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use matrix instead
-   */
-  getGameMatrix(): Matrix {
-    return this.#game.matrix;
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use playerScores$ instead
-   */
-  getPlayerScoresObservable(): Observable<number[]> {
-    return this.#game.playerScores$;
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use currentRoundNumber$ instead
-   */
-  getRoundNumberObservable(): Observable<number> {
-    return this.#game.currentRound$;
-  }
-
-  // DEPRECATED
-  /**
-   * @deprecated use playerStrategies instead
-   */
-  getPlayerStrategies(): string[][] {
-    return this.#game.matrix.playersStrategies;
   }
 
   submitPlayerStrategy(player: number, strategy: string): void {
