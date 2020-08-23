@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "src/app/services/game.service";
 import { Observable } from "rxjs";
-import { Matrix, Round } from "src/app/classes";
+import { Matrix, Round, Player, PlayerType } from "src/app/classes";
 import { Router } from "@angular/router";
 
 @Component({
@@ -16,20 +16,26 @@ export class GamePageComponent implements OnInit {
 
   gameMatrix: Matrix;
   isTwoPlayersGame: boolean;
+
   firstPlayerStrategies: string[];
   secondPlayerStrategies: string[];
   thirdPlayerStrategies: string[];
-  firstPlayerName: string;
-  secondPlayerName: string;
-  thirdPlayerName: string;
+  firstPlayer: Player;
+  secondPlayer: Player;
+  thirdPlayer: Player;
+  PLAYER_TYPES = PlayerType;
 
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
     this.gameMatrix = this.gameService.matrix;
     this.isTwoPlayersGame = this.gameService.players.length === 2;
-    this.firstPlayerName = this.gameService.players[0].name;
-    this.secondPlayerName = this.gameService.players[1].name;
+
+    this.firstPlayer = this.gameService.players[0];
+    this.secondPlayer = this.gameService.players[1];
+
+    // this.firstPlayerName = this.gameService.players[0].name;
+    // this.secondPlayerName = this.gameService.players[1].name;
 
     [
       this.firstPlayerStrategies,
@@ -40,7 +46,8 @@ export class GamePageComponent implements OnInit {
 
     if (!this.isTwoPlayersGame) {
       this.thirdPlayerStrategies = this.gameMatrix.playersStrategies[2];
-      this.thirdPlayerName = this.gameService.players[2].name;
+      this.thirdPlayer = this.gameService.players[2];
+      // this.thirdPlayerName = this.gameService.players[2].name;
     }
 
     this.scores$ = this.gameService.playerScores$;

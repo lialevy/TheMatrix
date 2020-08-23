@@ -1,7 +1,8 @@
 <div class="gameSetupFormDiv">
   <form #gameSetupForm="ngForm" (ngSubmit)="handleSubmit()">
+    <!-- # of players -->
     <div>
-      Choose # Of Players:
+      Number Of Players:
       <mat-radio-group
         [(ngModel)]="gameSettings.numberOfPlayers"
         name="numberOfPlayers"
@@ -13,8 +14,53 @@
       </mat-radio-group>
     </div>
 
+    <!-- human or computer players -->
+    <span>
+      <mat-button-toggle-group [ngModel]="playerTypes[0]" name="player1Type">
+        <p style="margin: auto; width: 70px; text-align: -webkit-center;">
+          Player 1
+        </p>
+        <mat-button-toggle
+          matTooltip="Human Player"
+          [value]="PLAYER_TYPES.Human"
+        >
+          <mat-icon color="accent">
+            face
+          </mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-button-toggle-group
+        *ngFor="let playerType of myPlayerTypes; index as playerTypeIndex"
+        [id]="'playerType-' + playerTypeIndex"
+        [name]="'playerType-' + playerTypeIndex"
+        [(ngModel)]="playerType.type"
+      >
+        <p style="margin: auto; width: 75px; text-align: -webkit-center;">
+          Player {{ playerTypeIndex + 2 }}
+        </p>
+        <mat-button-toggle
+          matTooltip="Human Player"
+          [value]="PLAYER_TYPES.Human"
+        >
+          <mat-icon color="accent">
+            face
+          </mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle
+          matTooltip="Computer Player"
+          [value]="PLAYER_TYPES.Random"
+        >
+          <mat-icon color="accent">
+            computer
+          </mat-icon></mat-button-toggle
+        >
+      </mat-button-toggle-group>
+    </span>
+
+    <!-- # of rounds -->
     <div>
-      Choose # Of Rounds:
+      Number Of Rounds:
       <mat-form-field>
         <input
           matInput
@@ -30,7 +76,7 @@
 
     <!-- dropdown -->
     <div>
-      Choose Game Matrix From List:
+      Game Matrix:
       <mat-form-field style="width: 200px;">
         <mat-label>Game Matrix Template</mat-label>
         <mat-select
@@ -53,6 +99,7 @@
 
       <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
         <button
+          matTooltip="Generate Random Values"
           mat-icon-button
           color="accent"
           class="generateButton"
@@ -60,11 +107,14 @@
           type="button"
           (click)="handleMatrixValuesChange()"
         >
-          <mat-icon> refresh </mat-icon>
+          <mat-icon>
+            refresh
+          </mat-icon>
         </button>
 
-        <mat-form-field>
+        <mat-form-field class="minMaxRandomValues">
           <input
+            matTooltip="Min Value to Generate"
             matInput
             type="number"
             [(ngModel)]="randomMatrixMinValue"
@@ -73,8 +123,9 @@
           />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="minMaxRandomValues">
           <input
+            matTooltip="Max Value to Generate"
             matInput
             type="number"
             [(ngModel)]="randomMatrixMaxValue"
@@ -88,7 +139,7 @@
     <!-- matrix dimension -->
     <span *ngIf="gameMatrixTemplate === 'Random Matrix'">
       <div>
-        Choose Game Matrix Dimensions
+        Game Matrix Dimensions
         <mat-form-field>
           <input
             matInput
@@ -136,25 +187,31 @@
           </mat-form-field>
         </span>
       </div>
-
-      <div>
-        Choose Game Type:
-        <mat-radio-group
-          [(ngModel)]="gameType"
-          name="gameType"
-          id="gameType"
-          (change)="handleGameTypeChange()"
-          [disabled]="gameSettings.numberOfPlayers === 3"
-        >
-          <mat-radio-button [value]="0">Normal</mat-radio-button>
-          <mat-radio-button [value]="1">ZeroSum</mat-radio-button>
-        </mat-radio-group>
-      </div>
     </span>
 
+    <!-- game type -->
+    <div *ngIf="gameMatrixTemplate === 'Random Matrix'">
+      Game Type:
+      <mat-radio-group
+        [(ngModel)]="gameType"
+        name="gameType"
+        id="gameType"
+        (change)="handleGameTypeChange()"
+        [disabled]="gameSettings.numberOfPlayers === 3"
+      >
+        <mat-radio-button [value]="GAME_TYPE.Normal">Normal</mat-radio-button>
+        <mat-radio-button [value]="GAME_TYPE.ZeroSum"
+          >Zero Sum</mat-radio-button
+        >
+      </mat-radio-group>
+    </div>
+
     <!-- game matrix -->
-    <div *ngIf="gameMatrix; else invalidMatrix">
-      <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
+    <div *ngIf="gameMatrix; else invalidMatrix" style="display: flex;">
+      <app-game-matrix
+        style="margin: auto;"
+        [matrix]="gameMatrix"
+      ></app-game-matrix>
     </div>
     <ng-template #invalidMatrix>
       Invalid

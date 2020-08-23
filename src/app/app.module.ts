@@ -10,6 +10,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
 import { MatSelectModule } from "@angular/material/select";
 import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
 
 import { FlexLayoutModule } from "@angular/flex-layout";
 
@@ -55,6 +57,8 @@ import { RoundsTableComponent } from "./views/result-page/rounds-table/rounds-ta
     MatTableModule,
     MatSelectModule,
     MatIconModule,
+    MatTooltipModule,
+    MatButtonToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
