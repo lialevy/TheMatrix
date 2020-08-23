@@ -9,7 +9,13 @@ import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
 import { Matrix, GameType, PlayerType, Player } from "src/app/classes";
 import { Observable, Subject } from "rxjs";
-import { NgForm } from "@angular/forms";
+import {
+  NgForm,
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+} from "@angular/forms";
 
 export interface GameSettings {
   numberOfPlayers: 2 | 3;
@@ -33,6 +39,7 @@ export class GameSetupPageComponent implements OnInit {
     gameMatrixDepth: 2,
   };
 
+  user_data: any;
   gameMatrix: Matrix;
   gameMatrixTemplate$: Observable<any>;
   RandomMatrixString: string;
@@ -45,7 +52,27 @@ export class GameSetupPageComponent implements OnInit {
   myPlayerTypes: { type: PlayerType }[] = [{ type: PlayerType.Human }];
   PLAYER_TYPES = PlayerType;
 
-  constructor(private gameService: GameService, private router: Router) {}
+  constructor(
+    private gameService: GameService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {
+    this.user_data = this.formBuilder.group({
+      numberOfRounds: [
+        "",
+        [Validators.min(1), Validators.max(10), Validators.required],
+      ],
+      gameMatrixNumOfRows: [
+        "",
+        [Validators.min(2), Validators.max(8), Validators.required],
+      ],
+      gameMatrixNumOfCols: [
+        "",
+        [Validators.min(2), Validators.max(8), Validators.required],
+      ],
+      gameMatrixDepth: ["", [Validators.min(2), Validators.max(8)]],
+    });
+  }
 
   ngOnInit(): void {
     this.RandomMatrixString = "Random Matrix";
