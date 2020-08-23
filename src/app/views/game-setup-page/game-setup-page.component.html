@@ -238,7 +238,7 @@
     <div style="margin-top: 15px;">
       <button
         mat-raised-button
-        [disabled]="!user_data.valid"
+        [disabled]="!user_data.valid || !gameSettings.gameMatrixDepth"
         type="submit"
         color="accent"
         style="width: 100%;"
