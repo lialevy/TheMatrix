@@ -113,22 +113,29 @@ export default abstract class Game {
       strategy
     };
 
-    return this.players.reduce(
+    const roundFinished = this.players.reduce(
       (prev, curr) =>
         prev &&
         (curr.type !== PlayerType.Human ||
           this.currentPlayerStrategies[curr.playerNumber] !== undefined),
       true
     );
-  }
 
-  finishRound(roundResult: number[]): void {
-    for (const player of this.players) {
-      if (player.type !== PlayerType.Human) {
-        this.currentPlayerStrategies[player.playerNumber] = new Strategy(player, (player as ComputerPlayer).play());
+    if (roundFinished) {
+      for (const player of this.players) {
+        if (player.type !== PlayerType.Human) {
+          this.currentPlayerStrategies[player.playerNumber] = new Strategy(
+            player,
+            (player as ComputerPlayer).play(this.matrix.playersStrategies[player.playerNumber])
+          );
+        }
       }
     }
 
+    return roundFinished;
+  }
+
+  finishRound(roundResult: number[]): void {
     const pureEquilibrium = this.isPureEquilibrium();
 
     const round = new Round(this.currentPlayerStrategies, roundResult, pureEquilibrium);
