@@ -145,7 +145,7 @@ export default class ThreePlayerGame extends Game {
         const secondProbability = mixedStrategies[1].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
 
         for (const thirdStrategy of this.matrix.playersStrategies[2]) {
-          const thirdProbability = mixedStrategies[2].strategy.find(strategy => strategy.strategy === secondStrategy).probability;
+          const thirdProbability = mixedStrategies[2].strategy.find(strategy => strategy.strategy === thirdStrategy).probability;
 
           for (const player of this.players) {
             expectedValues[player.playerNumber] +=
@@ -179,7 +179,7 @@ export default class ThreePlayerGame extends Game {
     }
 
     for (const otherStrategy of player3Strategies.filter(s => s !== s3.strategy)) {
-      const [_, __, newPayoff] = this.matrix.paymentsMatrix[s1.strategy][otherStrategy][s3.strategy];
+      const [_, __, newPayoff] = this.matrix.paymentsMatrix[s1.strategy][s2.strategy][otherStrategy];
 
       if (newPayoff > payoff3) { return false; }
     }
@@ -230,5 +230,11 @@ export default class ThreePlayerGame extends Game {
       roundsTable: this.rounds,
       mixedStrategies: mixedStrategies.map((mixedStrategy, index) => ({ ...mixedStrategy, expectedValue: expectedValues[index]}))
     };
+  }
+
+  protected calculateMixedStrategies(): MixedStrategy[] {
+    const mixedStrategies = super.calculateMixedStrategies();
+
+    return mixedStrategies;
   }
 }
