@@ -1,5 +1,6 @@
 <div class="gameSetupFormDiv">
   <form #gameSetupForm="ngForm" (ngSubmit)="handleSubmit()">
+    <!-- # of players -->
     <div>
       Number Of Players:
       <mat-radio-group
@@ -13,6 +14,71 @@
       </mat-radio-group>
     </div>
 
+    <!-- human or computer players -->
+    <span>
+      <mat-button-toggle-group>
+        <p style="margin: auto; width: 70px; text-align: -webkit-center;">
+          Player 1
+        </p>
+        <mat-button-toggle matTooltip="Human Player">
+          <mat-icon color="accent">
+            face
+          </mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-button-toggle-group
+        *ngFor="let playerType of myPlayerTypes; index as playerTypeIndex"
+        [id]="'playerType-' + playerTypeIndex"
+        [name]="'playerType-' + playerTypeIndex"
+        [(ngModel)]="playerType.type"
+      >
+        <p style="margin: auto; width: 70px; text-align: -webkit-center;">
+          Player {{ playerTypeIndex + 2 }}
+        </p>
+        <mat-button-toggle
+          matTooltip="Human Player"
+          [value]="PLAYER_TYPES.Human"
+        >
+          <mat-icon color="accent">
+            face
+          </mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle
+          matTooltip="Computer Player"
+          [value]="PLAYER_TYPES.Random"
+        >
+          <mat-icon color="accent">
+            computer
+          </mat-icon></mat-button-toggle
+        >
+
+        <!-- <ng-container *ngIf="playerType.type !== PLAYER_TYPES.Human">
+          <mat-form-field style="width: 120px;">
+            <mat-label>Player Type</mat-label>
+            <mat-select
+              [(ngModel)]="playerType.type"
+              name="computerPlayerType"
+              id="computerPlayerType"
+            >
+              <mat-option [value]="PLAYER_TYPES.Random">
+                Random Player
+              </mat-option>
+
+              <mat-option [value]="PLAYER_TYPES.MinMax">
+                MinMax Player
+              </mat-option>
+
+              <mat-option [value]="PLAYER_TYPES.MaxMin">
+                MaxMin Player
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container> -->
+      </mat-button-toggle-group>
+    </span>
+
+    <!-- # of rounds -->
     <div>
       Number Of Rounds:
       <mat-form-field>
@@ -30,7 +96,7 @@
 
     <!-- dropdown -->
     <div>
-      Choose Game Matrix From List:
+      Game Matrix:
       <mat-form-field style="width: 200px;">
         <mat-label>Game Matrix Template</mat-label>
         <mat-select
@@ -141,25 +207,31 @@
           </mat-form-field>
         </span>
       </div>
-
-      <div>
-        Choose Game Type:
-        <mat-radio-group
-          [(ngModel)]="gameType"
-          name="gameType"
-          id="gameType"
-          (change)="handleGameTypeChange()"
-          [disabled]="gameSettings.numberOfPlayers === 3"
-        >
-          <mat-radio-button [value]="0">Normal</mat-radio-button>
-          <mat-radio-button [value]="1">ZeroSum</mat-radio-button>
-        </mat-radio-group>
-      </div>
     </span>
 
+    <!-- game type -->
+    <div *ngIf="gameMatrixTemplate === 'Random Matrix'">
+      Game Type:
+      <mat-radio-group
+        [(ngModel)]="gameType"
+        name="gameType"
+        id="gameType"
+        (change)="handleGameTypeChange()"
+        [disabled]="gameSettings.numberOfPlayers === 3"
+      >
+        <mat-radio-button [value]="GAME_TYPE.Normal">Normal</mat-radio-button>
+        <mat-radio-button [value]="GAME_TYPE.ZeroSum"
+          >Zero Sum</mat-radio-button
+        >
+      </mat-radio-group>
+    </div>
+
     <!-- game matrix -->
-    <div *ngIf="gameMatrix; else invalidMatrix">
-      <app-game-matrix [matrix]="gameMatrix"></app-game-matrix>
+    <div *ngIf="gameMatrix; else invalidMatrix" style="display: flex;">
+      <app-game-matrix
+        style="margin: auto;"
+        [matrix]="gameMatrix"
+      ></app-game-matrix>
     </div>
     <ng-template #invalidMatrix>
       Invalid

@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { GameService } from "../../services/game.service";
 import { Router } from "@angular/router";
-import { Matrix, GameType } from "src/app/classes";
+import { Matrix, GameType, PlayerType, Player } from "src/app/classes";
 import { Observable, Subject } from "rxjs";
 import { NgForm } from "@angular/forms";
 
@@ -39,13 +39,17 @@ export class GameSetupPageComponent implements OnInit {
   gameMatrixTemplate: string;
   randomMatrixMinValue: number;
   randomMatrixMaxValue: number;
+  GAME_TYPE = GameType;
   gameType: GameType;
+  playerTypes: PlayerType[] = [PlayerType.Human];
+  myPlayerTypes: { type: PlayerType }[] = [{ type: PlayerType.Human }];
+  PLAYER_TYPES = PlayerType;
 
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
     this.RandomMatrixString = "Random Matrix";
-    this.gameType = 0;
+    this.gameType = GameType.Normal;
     this.randomMatrixMinValue = 0;
     this.randomMatrixMaxValue = 10;
     this.gameMatrixTemplate = this.RandomMatrixString;
@@ -67,8 +71,16 @@ export class GameSetupPageComponent implements OnInit {
 
   handleSubmit() {
     this.gameService.setNumberOfRounds(this.gameSettings.numberOfRounds);
-    this.gameService.finalizeGameSetup();
+    this.myPlayerTypes.map((playerType) => {
+      this.playerTypes.push(playerType.type);
+    });
+    console.log(this.playerTypes);
+    this.gameService.finalizeGameSetup(this.playerTypes);
     this.router.navigate(["/game"]);
+  }
+
+  trackPlayerTypes(index: number, obj: any): any {
+    return index;
   }
 
   recreateMatrix() {
@@ -97,7 +109,12 @@ export class GameSetupPageComponent implements OnInit {
 
   handleNumberOfPlayersChange() {
     this.gameService.setNumberOfPlayers(this.gameSettings.numberOfPlayers);
-    this.gameType = 0;
+    this.gameType = GameType.Normal;
+    if (this.gameSettings.numberOfPlayers === 3) {
+      this.myPlayerTypes.push({ type: PlayerType.Human });
+    } else {
+      this.myPlayerTypes.pop();
+    }
     this.recreateMatrix();
   }
 }

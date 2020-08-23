@@ -1,10 +1,13 @@
 .gameSetupFormDiv {
   margin: auto;
-  width: 50%;
+  width: 55%;
 }
 .mat-radio-button ~ .mat-radio-button {
   margin-left: 16px;
   margin-bottom: 16px;
+}
+.mat-radio-group {
+  margin-left: 10px;
 }
 .mat-form-field {
   width: 70px;
@@ -15,10 +18,17 @@ div {
   margin-top: 10px;
 }
 .generateButton {
-  margin-left: 20px;
+  margin: auto;
+  margin-left: 25px;
   margin-right: 10px;
 }
 
 .minMaxRandomValues {
   width: 50px;
+  margin-left: 10px;
+}
+
+.mat-button-toggle-group {
+  margin-right: 16px;
+  margin-top: 10px;
 }

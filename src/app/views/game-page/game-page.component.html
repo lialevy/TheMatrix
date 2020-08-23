@@ -25,8 +25,8 @@
   fxLayoutGap="35px"
   fxLayoutAlign="center stretch"
 >
-  <div>
-    {{ firstPlayerName }} picks
+  <div *ngIf="firstPlayer.type === PLAYER_TYPES.Human">
+    {{ firstPlayer.name }} picks
     <button
       *ngFor="let firstPlayerStrategy of firstPlayerStrategies"
       mat-stroked-button
@@ -37,8 +37,8 @@
     </button>
   </div>
 
-  <div>
-    {{ secondPlayerName }} picks
+  <div *ngIf="secondPlayer.type === PLAYER_TYPES.Human">
+    {{ secondPlayer.name }} picks
     <button
       *ngFor="let secondPlayerStrategy of secondPlayerStrategies"
       mat-stroked-button
@@ -50,15 +50,17 @@
   </div>
 
   <div *ngIf="!isTwoPlayersGame">
-    {{ thirdPlayerName }} picks
-    <button
-      *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
-      mat-stroked-button
-      color="warn"
-      (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
-    >
-      {{ thirdPlayerStrategy }}
-    </button>
+    <ng-container *ngIf="thirdPlayer.type === PLAYER_TYPES.Human">
+      {{ thirdPlayer.name }} picks
+      <button
+        *ngFor="let thirdPlayerStrategy of thirdPlayerStrategies"
+        mat-stroked-button
+        color="warn"
+        (click)="handleThirdPlayerPick(thirdPlayerStrategy)"
+      >
+        {{ thirdPlayerStrategy }}
+      </button>
+    </ng-container>
   </div>
 </div>
 
