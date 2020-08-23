@@ -156,7 +156,7 @@ export default class ThreePlayerGame extends Game {
       }
     }
 
-    return expectedValues;
+    return expectedValues.map(value => Number(value.toFixed(3)));
   }
 
   isPureEquilibrium(): boolean {
@@ -230,11 +230,5 @@ export default class ThreePlayerGame extends Game {
       roundsTable: this.rounds,
       mixedStrategies: mixedStrategies.map((mixedStrategy, index) => ({ ...mixedStrategy, expectedValue: expectedValues[index]}))
     };
-  }
-
-  protected calculateMixedStrategies(): MixedStrategy[] {
-    const mixedStrategies = super.calculateMixedStrategies();
-
-    return mixedStrategies;
   }
 }

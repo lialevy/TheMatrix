@@ -166,9 +166,15 @@ export default abstract class Game {
         player,
         playerStrategies.map(strategy => ({
           strategy,
-          probability: strategyCounter[strategy] / this.rounds.length
+          probability: Number((strategyCounter[strategy] / this.rounds.length).toFixed(3))
         }))
       );
+
+      const sum = mixedStrategy.strategy.reduce(
+        (prev, curr, index) => prev + (index !== mixedStrategy.strategy.length - 1 ? curr.probability : 0), 0
+      );
+
+      mixedStrategy.strategy[mixedStrategy.strategy.length - 1].probability = 1 - sum;
 
       mixedStrategies.push(mixedStrategy);
     }
