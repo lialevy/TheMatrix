@@ -16,11 +16,14 @@
 
     <!-- human or computer players -->
     <span>
-      <mat-button-toggle-group>
+      <mat-button-toggle-group [ngModel]="playerTypes[0]" name="player1Type">
         <p style="margin: auto; width: 70px; text-align: -webkit-center;">
           Player 1
         </p>
-        <mat-button-toggle matTooltip="Human Player">
+        <mat-button-toggle
+          matTooltip="Human Player"
+          [value]="PLAYER_TYPES.Human"
+        >
           <mat-icon color="accent">
             face
           </mat-icon>
@@ -33,7 +36,7 @@
         [name]="'playerType-' + playerTypeIndex"
         [(ngModel)]="playerType.type"
       >
-        <p style="margin: auto; width: 70px; text-align: -webkit-center;">
+        <p style="margin: auto; width: 75px; text-align: -webkit-center;">
           Player {{ playerTypeIndex + 2 }}
         </p>
         <mat-button-toggle
@@ -52,29 +55,6 @@
             computer
           </mat-icon></mat-button-toggle
         >
-
-        <!-- <ng-container *ngIf="playerType.type !== PLAYER_TYPES.Human">
-          <mat-form-field style="width: 120px;">
-            <mat-label>Player Type</mat-label>
-            <mat-select
-              [(ngModel)]="playerType.type"
-              name="computerPlayerType"
-              id="computerPlayerType"
-            >
-              <mat-option [value]="PLAYER_TYPES.Random">
-                Random Player
-              </mat-option>
-
-              <mat-option [value]="PLAYER_TYPES.MinMax">
-                MinMax Player
-              </mat-option>
-
-              <mat-option [value]="PLAYER_TYPES.MaxMin">
-                MaxMin Player
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-container> -->
       </mat-button-toggle-group>
     </span>
 
