@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
 import { Round, Player, MixedStrategy } from "src/app/classes";
 import { Results } from "src/app/services/game-service.interface";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-result-page",
@@ -9,7 +10,6 @@ import { Results } from "src/app/services/game-service.interface";
   styleUrls: ["./result-page.component.scss"],
 })
 export class ResultPageComponent implements OnInit {
-  constructor(private gameService: GameService) {}
   gameResults: Results;
   displayedColumns: string[];
   dataSource: any;
@@ -24,7 +24,16 @@ export class ResultPageComponent implements OnInit {
   summaryDisplayedColumns: string[];
   summaryDataSource: any;
 
+  constructor(
+    private gameService: GameService,
+    private router: Router,
+  ) {}
+
   ngOnInit(): void {
+    if (!this.gameService.matrix.paymentsMatrix) {
+      this.router.navigateByUrl('/');
+    }
+
     this.gameResults = this.gameService.getGameResults();
     this.isTwoPlayersGame = this.gameService.players.length === 2;
 

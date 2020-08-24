@@ -72,7 +72,9 @@ export default class TwoPlayerGame extends Game {
   ): TwoPlayerMatrix {
     for (const firstPlayerStrategy of this.matrix.playersStrategies[0]) {
       for (const secondPlayerStrategy of this.matrix.playersStrategies[1]) {
-        const firstPlayerPayoff = Math.ceil(
+        const negativePlayer = (type !== GameType.ZeroSum || (Math.random() - 0.5)) > 0 ? 1 : -1;
+
+        const firstPlayerPayoff = negativePlayer * Math.ceil(
           Math.random() * (maxValue - minValue) + minValue
         );
         const secondPlayerPayoff =
@@ -139,7 +141,7 @@ export default class TwoPlayerGame extends Game {
             firstProbability *
             secondProbability *
             this.matrix.paymentsMatrix[firstStrategy][secondStrategy][
-              player.playerNumber as number
+            player.playerNumber as number
             ];
         }
       }
