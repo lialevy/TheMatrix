@@ -111,21 +111,25 @@ export class GameSetupPageComponent implements OnInit {
   }
 
   recreateMatrix() {
-    if (this.gameMatrixTemplate !== "Random Matrix") {
-      this.gameMatrix = this.gameService.createGameMatrixByTemplate(
-        this.gameMatrixTemplate
-      );
+    if (this.user_data.valid) {
+      if (this.gameMatrixTemplate !== "Random Matrix") {
+        this.gameMatrix = this.gameService.createGameMatrixByTemplate(
+          this.gameMatrixTemplate
+        );
+      } else {
+        this.gameMatrix = this.gameService.createGameMatrixByDimensions(
+          this.gameSettings.gameMatrixNumOfRows,
+          this.gameSettings.gameMatrixNumOfCols,
+          this.gameSettings.gameMatrixDepth
+        );
+        this.gameService.generateRandomMatrixValues(
+          this.randomMatrixMinValue,
+          this.randomMatrixMaxValue,
+          this.gameType
+        );
+      }
     } else {
-      this.gameMatrix = this.gameService.createGameMatrixByDimensions(
-        this.gameSettings.gameMatrixNumOfRows,
-        this.gameSettings.gameMatrixNumOfCols,
-        this.gameSettings.gameMatrixDepth
-      );
-      this.gameService.generateRandomMatrixValues(
-        this.randomMatrixMinValue,
-        this.randomMatrixMaxValue,
-        this.gameType
-      );
+      this.gameMatrix = undefined;
     }
   }
 
@@ -141,6 +145,7 @@ export class GameSetupPageComponent implements OnInit {
       this.myPlayerTypes.push({ type: PlayerType.Human });
     } else {
       this.myPlayerTypes.pop();
+      this.gameSettings.gameMatrixDepth = 2;
     }
     this.recreateMatrix();
   }

@@ -73,8 +73,10 @@
             min="1"
             max="10"
             formControlName="numberOfRounds"
+            #numberOfRounds
           />
         </div>
+        <mat-error> Must be 1 - 10 </mat-error>
       </mat-form-field>
     </div>
 
@@ -158,6 +160,7 @@
             formControlName="gameMatrixNumOfRows"
           />
         </div>
+        <mat-error> Must be 2 - 8 </mat-error>
       </mat-form-field>
 
       X
@@ -176,6 +179,7 @@
             formControlName="gameMatrixNumOfCols"
           />
         </div>
+        <mat-error> Must be 2 - 8 </mat-error>
       </mat-form-field>
 
       <span *ngIf="gameSettings.numberOfPlayers === 3">
@@ -195,6 +199,7 @@
               formControlName="gameMatrixDepth"
             />
           </div>
+          <mat-error> Must be 2 - 8 </mat-error>
         </mat-form-field>
       </span>
     </span>
@@ -217,7 +222,12 @@
     </div>
 
     <!-- game matrix -->
-    <ng-container *ngIf="user_data.valid; else invalidMatrix">
+    <ng-container
+      *ngIf="
+        user_data.valid && gameSettings.gameMatrixDepth;
+        else invalidMatrix
+      "
+    >
       <div *ngIf="gameMatrix" style="display: flex;">
         <app-game-matrix
           style="margin: auto;"
