@@ -181,7 +181,7 @@ export default abstract class Game {
         (prev, curr, index) => prev + (index !== mixedStrategy.strategy.length - 1 ? curr.probability : 0), 0
       );
 
-      mixedStrategy.strategy[mixedStrategy.strategy.length - 1].probability = 1 - sum;
+      mixedStrategy.strategy[mixedStrategy.strategy.length - 1].probability = Number((1 - sum).toFixed(3));
 
       mixedStrategies.push(mixedStrategy);
     }

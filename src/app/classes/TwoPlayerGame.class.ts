@@ -147,7 +147,7 @@ export default class TwoPlayerGame extends Game {
       }
     }
 
-    return expectedValues;
+    return expectedValues.map(value => Number(value.toFixed(3)));
   }
 
   isPureEquilibrium(): boolean {
