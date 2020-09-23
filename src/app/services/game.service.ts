@@ -7,7 +7,9 @@ import {
   Round,
   ThreePlayerGame,
   TwoPlayerGame,
-  GameType, PlayerType
+  GameType,
+  PlayerType,
+  PlayStyle,
 } from '../classes';
 import Templates from '../templates';
 import { Results } from './game-service.interface';
@@ -18,15 +20,11 @@ import { Results } from './game-service.interface';
 export class GameService {
   #game: Game;
   #numberOfPlayers: number;
-  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<
-    string[]
-  >([]);
+  #playerTemplatesSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   #currentTemplates: { [propName: string]: any };
 
   gameFinished$: Observable<boolean>;
-  playerTemplates$: Observable<
-    string[]
-  > = this.#playerTemplatesSubject.asObservable();
+  playerTemplates$: Observable<string[]> = this.#playerTemplatesSubject.asObservable();
   lastRound$: Observable<Round>;
   playerScores$: Observable<number[]>;
   currentRoundNumber$: Observable<number>;
@@ -45,6 +43,14 @@ export class GameService {
 
   get playerStrategies(): string[][] {
     return this.#game.matrix.playersStrategies;
+  }
+
+  get playStyle(): PlayStyle {
+    return this.#game.playStyle;
+  }
+
+  set playStyle(style: PlayStyle) {
+    this.#game.playStyle = style;
   }
 
   constructor() {
@@ -75,11 +81,7 @@ export class GameService {
     this.#game.setNumberOfRounds(numberOfRounds);
   }
 
-  createGameMatrixByDimensions(
-    rows: number,
-    columns: number,
-    depth?: number
-  ): Matrix {
+  createGameMatrixByDimensions(rows: number, columns: number, depth?: number): Matrix {
     return this.#game.createGameMatrix(rows, columns, depth);
   }
 

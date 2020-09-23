@@ -4,13 +4,17 @@ import ThreePlayerMatrix from './ThreePlayerMatrix.class';
 import TwoPlayerMatrix from './TwoPlayerMatrix.class';
 import { Results } from '../services/game-service.interface';
 import Player from './Player.class';
-import ComputerPlayer, { RandomComputerPlayer, MaxMinComputerPlayer } from './ComputerPlayers.class';
+import ComputerPlayer, {
+  RandomComputerPlayer,
+  MaxMinComputerPlayer,
+} from './ComputerPlayers.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
 import PlayerType from './PlayerType.enum';
 import GameType from './GameType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
 import Matrix from './Matrix.class';
+import PlayStyle from './PlayStyle.enum';
 
 const playerTypeClasses = {};
 playerTypeClasses[PlayerType.Human] = Player;
@@ -29,17 +33,18 @@ export default abstract class Game {
 
   playerScores$: Observable<number[]> = this.#playerScoresSubject.asObservable();
   currentRound$: Observable<number> = this.#roundSubject.asObservable();
-  gameFinished$: Observable<boolean> = this.#gameFinishedSubject.asObservable().pipe(
-    skipWhile(finished => !finished)
-  );
+  gameFinished$: Observable<boolean> = this.#gameFinishedSubject
+    .asObservable()
+    .pipe(skipWhile((finished) => !finished));
   lastRound$: Observable<Round> = this.#lastRoundSubject.asObservable();
 
   abstract matrix: Matrix;
   players: Player[];
   numberOfRounds: number;
   rounds: Round[];
+  playStyle: PlayStyle = PlayStyle.Rounds;
 
-  constructor() { }
+  constructor() {}
 
   createPlayers(playerTypes: PlayerType[], numberOfPlayers: number): void {
     this.players = [];
@@ -51,7 +56,7 @@ export default abstract class Game {
       this.players.push(new playerClass(playerIndex as 0 | 1 | 2));
     }
 
-    this.#playerScoresSubject.next(this.players.map(p => p.cookies));
+    this.#playerScoresSubject.next(this.players.map((p) => p.cookies));
   }
 
   setNumberOfRounds(numberOfRounds: number): void {
@@ -62,11 +67,17 @@ export default abstract class Game {
   abstract createGameMatrix(rows: number, columns: number, depth: number): Matrix;
 
   createGameMatrixByTemplate(template: any): Matrix {
-    this.matrix = (this.players.length === 2) ? new TwoPlayerMatrix() : new ThreePlayerMatrix();
+    this.matrix = this.players.length === 2 ? new TwoPlayerMatrix() : new ThreePlayerMatrix();
     this.matrix.playersStrategies = [];
     this.matrix.paymentsMatrix = template;
 
-    const drillDown = (x: any) => { for (const y in x) { if (x[y] !== undefined) { return x[y]; } } };
+    const drillDown = (x: any) => {
+      for (const y in x) {
+        if (x[y] !== undefined) {
+          return x[y];
+        }
+      }
+    };
 
     let currentMatrix = this.matrix.paymentsMatrix;
     let reducedMatrix = drillDown(drillDown(currentMatrix));
@@ -94,8 +105,10 @@ export default abstract class Game {
     if (!this.matrix) {
       errors.push('No game matrix was set');
     } else {
-      if (!this.matrix.playersStrategies ||
-          !(this.matrix.playersStrategies.length !== this.players.length)) {
+      if (
+        !this.matrix.playersStrategies ||
+        !(this.matrix.playersStrategies.length !== this.players.length)
+      ) {
         errors.push('Number of player strategies do not match number of players in game');
       }
 
@@ -104,13 +117,13 @@ export default abstract class Game {
       }
     }
 
-    return [(errors.length > 0), errors];
+    return [errors.length > 0, errors];
   }
 
   submitPlayerStrategy(playerIndex: number, strategy: string): boolean {
     this.currentPlayerStrategies[playerIndex] = {
       player: this.players[playerIndex],
-      strategy
+      strategy,
     };
 
     const roundFinished = this.players.reduce(
@@ -145,7 +158,7 @@ export default abstract class Game {
     this.players.forEach((player, index) => (player.cookies += roundResult[index]));
 
     this.currentPlayerStrategies.fill(undefined);
-    this.#playerScoresSubject.next(this.players.map(p => p.cookies));
+    this.#playerScoresSubject.next(this.players.map((p) => p.cookies));
 
     if (this.#roundSubject.value < this.numberOfRounds) {
       this.#roundSubject.next(this.#roundSubject.value + 1);
@@ -162,26 +175,35 @@ export default abstract class Game {
     const mixedStrategies: MixedStrategy[] = [];
 
     for (const player of this.players) {
-      const playedStrategies = this.rounds.map(round => round.playedStrategies[player.playerNumber].strategy);
+      const playedStrategies = this.rounds.map(
+        (round) => round.playedStrategies[player.playerNumber].strategy
+      );
       const playerStrategies = this.matrix.playersStrategies[player.playerNumber];
 
-      const strategyCounter = playerStrategies.reduce((counter, strategy) => { counter[strategy] = 0; return counter; }, {});
+      const strategyCounter = playerStrategies.reduce((counter, strategy) => {
+        counter[strategy] = 0;
+        return counter;
+      }, {});
 
-      playedStrategies.forEach(strategy => strategyCounter[strategy]++);
+      playedStrategies.forEach((strategy) => strategyCounter[strategy]++);
 
       const mixedStrategy = new MixedStrategy(
         player,
-        playerStrategies.map(strategy => ({
+        playerStrategies.map((strategy) => ({
           strategy,
-          probability: Number((strategyCounter[strategy] / this.rounds.length).toFixed(3))
+          probability: Number((strategyCounter[strategy] / this.rounds.length).toFixed(3)),
         }))
       );
 
       const sum = mixedStrategy.strategy.reduce(
-        (prev, curr, index) => prev + (index !== mixedStrategy.strategy.length - 1 ? curr.probability : 0), 0
+        (prev, curr, index) =>
+          prev + (index !== mixedStrategy.strategy.length - 1 ? curr.probability : 0),
+        0
       );
 
-      mixedStrategy.strategy[mixedStrategy.strategy.length - 1].probability = Number((1 - sum).toFixed(3));
+      mixedStrategy.strategy[mixedStrategy.strategy.length - 1].probability = Number(
+        (1 - sum).toFixed(3)
+      );
 
       mixedStrategies.push(mixedStrategy);
     }

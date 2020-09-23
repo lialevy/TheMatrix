@@ -10,6 +10,7 @@ import Strategy from './Strategy.class';
 import MixedStrategy from './MixedStrategy.class';
 import PlayerType from './PlayerType.enum';
 import GameType from './GameType.enum';
+import PlayStyle from './PlayStyle.enum';
 
 export {
   Game,
@@ -23,5 +24,6 @@ export {
   Strategy,
   MixedStrategy,
   GameType,
-  PlayerType
+  PlayerType,
+  PlayStyle,
 };
