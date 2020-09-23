@@ -1,5 +1,5 @@
 enum PlayStyle {
-  Normal,
+  Rounds,
   MixedStrategy,
 }
 

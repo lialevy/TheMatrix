@@ -42,7 +42,7 @@ export default abstract class Game {
   players: Player[];
   numberOfRounds: number;
   rounds: Round[];
-  playStyle: PlayStyle = PlayStyle.Normal;
+  playStyle: PlayStyle = PlayStyle.Rounds;
 
   constructor() {}
 
