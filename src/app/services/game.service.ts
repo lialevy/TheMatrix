@@ -119,6 +119,23 @@ export class GameService {
     this.#game.submitPlayerStrategy(player, strategy);
   }
 
+  submitPlayerMixedStrategy(
+    player: number,
+    strategy: { strategy: string; probability: number }[]
+  ): void {
+    this.#game.submitPlayerMixedStrategy(player, strategy);
+  }
+
+  simulateMixedStrategyGame(): void {
+    if (this.playStyle !== PlayStyle.MixedStrategy) {
+      return;
+    }
+
+    for (let round = 0; round < this.numberOfRounds; round++) {
+      this.#game.simulateRound();
+    }
+  }
+
   getGameResults(): Results {
     return this.#game.getGameResults();
   }

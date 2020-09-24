@@ -15,6 +15,7 @@ import GameType from './GameType.enum';
 import { skipWhile, tap } from 'rxjs/operators';
 import Matrix from './Matrix.class';
 import PlayStyle from './PlayStyle.enum';
+import PureStrategy from './PureStrategy.class';
 
 const playerTypeClasses = {};
 playerTypeClasses[PlayerType.Human] = Player;
@@ -148,6 +149,18 @@ export default abstract class Game {
     return roundFinished;
   }
 
+  submitPlayerMixedStrategy(
+    playerIndex: number,
+    strategy: { strategy: string; probability: number }[]
+  ): void {
+    this.currentPlayerStrategies[playerIndex] = {
+      player: this.players[playerIndex],
+      strategy,
+    };
+  }
+
+  abstract simulateRound(): void;
+
   finishRound(roundResult: number[]): void {
     const pureEquilibrium = this.isPureEquilibrium();
 
@@ -176,7 +189,7 @@ export default abstract class Game {
 
     for (const player of this.players) {
       const playedStrategies = this.rounds.map(
-        (round) => round.playedStrategies[player.playerNumber].strategy
+        (round) => (round.playedStrategies[player.playerNumber] as PureStrategy).strategy
       );
       const playerStrategies = this.matrix.playersStrategies[player.playerNumber];
 
