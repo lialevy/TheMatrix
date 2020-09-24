@@ -7,14 +7,13 @@ import MixedStrategy from './MixedStrategy.class';
 import TwoPlayerMatrix from './TwoPlayerMatrix.class';
 import PlayerType from './PlayerType.enum';
 import ComputerPlayer from './ComputerPlayers.class';
+import PureStrategy from './PureStrategy.class';
+import PlayStyle from './PlayStyle.enum';
 
 export default class TwoPlayerGame extends Game {
   matrix: TwoPlayerMatrix;
 
-  protected currentPlayerStrategies: [Strategy, Strategy] = [
-    undefined,
-    undefined,
-  ];
+  protected currentPlayerStrategies: [Strategy, Strategy] = [undefined, undefined];
 
   constructor(matrix?: TwoPlayerMatrix, numberOfRounds: number = 1) {
     super();
@@ -56,10 +55,7 @@ export default class TwoPlayerGame extends Game {
     }
 
     this.matrix = new TwoPlayerMatrix();
-    this.matrix.playersStrategies = [
-      firstPlayerStrategies,
-      secondPlayerStrategies,
-    ];
+    this.matrix.playersStrategies = [firstPlayerStrategies, secondPlayerStrategies];
     this.matrix.paymentsMatrix = paymentsMatrix;
 
     return this.matrix;
@@ -72,18 +68,18 @@ export default class TwoPlayerGame extends Game {
   ): TwoPlayerMatrix {
     for (const firstPlayerStrategy of this.matrix.playersStrategies[0]) {
       for (const secondPlayerStrategy of this.matrix.playersStrategies[1]) {
-        const negativePlayer = (type !== GameType.ZeroSum || (Math.random() - 0.5)) > 0 ? 1 : -1;
+        const negativePlayer = (type !== GameType.ZeroSum || Math.random() - 0.5) > 0 ? 1 : -1;
 
-        const firstPlayerPayoff = negativePlayer * Math.ceil(
-          Math.random() * (maxValue - minValue) + minValue
-        );
+        const firstPlayerPayoff =
+          negativePlayer * Math.ceil(Math.random() * (maxValue - minValue) + minValue);
         const secondPlayerPayoff =
           type === GameType.ZeroSum
             ? -firstPlayerPayoff
             : Math.ceil(Math.random() * (maxValue - minValue) + minValue);
-        this.matrix.paymentsMatrix[firstPlayerStrategy][
-          secondPlayerStrategy
-        ] = [firstPlayerPayoff, secondPlayerPayoff];
+        this.matrix.paymentsMatrix[firstPlayerStrategy][secondPlayerStrategy] = [
+          firstPlayerPayoff,
+          secondPlayerPayoff,
+        ];
       }
     }
 
@@ -115,12 +111,18 @@ export default class TwoPlayerGame extends Game {
 
     if (roundFinished) {
       const [s1, s2] = this.currentPlayerStrategies;
-      const roundResult = this.matrix.paymentsMatrix[s1.strategy][s2.strategy];
+      const roundResult = this.matrix.paymentsMatrix[(s1 as PureStrategy).strategy][
+        (s2 as PureStrategy).strategy
+      ];
 
       super.finishRound(roundResult);
     }
 
     return roundFinished;
+  }
+
+  simulateRound(): void {
+    throw new Error('Method not implemented.');
   }
 
   calculateExpectedValues(mixedStrategies: MixedStrategy[]): number[] {
@@ -141,31 +143,26 @@ export default class TwoPlayerGame extends Game {
             firstProbability *
             secondProbability *
             this.matrix.paymentsMatrix[firstStrategy][secondStrategy][
-            player.playerNumber as number
+              player.playerNumber as number
             ];
         }
       }
     }
 
-    return expectedValues.map(value => Number(value.toFixed(3)));
+    return expectedValues.map((value) => Number(value.toFixed(3)));
   }
 
   isPureEquilibrium(): boolean {
     const [s1, s2] = this.currentPlayerStrategies;
-    const [payoff1, payoff2] = this.matrix.paymentsMatrix[s1.strategy][
-      s2.strategy
+    const [payoff1, payoff2] = this.matrix.paymentsMatrix[(s1 as PureStrategy).strategy][
+      (s2 as PureStrategy).strategy
     ];
-    const [
-      player1Strategies,
-      player2Strategies,
-    ] = this.matrix.playersStrategies;
+    const [player1Strategies, player2Strategies] = this.matrix.playersStrategies;
 
     // Check if player 1 has a better strategy given s2
-    for (const otherStrategy of player1Strategies.filter(
-      (s) => s !== s1.strategy
-    )) {
+    for (const otherStrategy of player1Strategies.filter((s) => s !== s1.strategy)) {
       const [newPayoff, _] = this.matrix.paymentsMatrix[otherStrategy][
-        s2.strategy
+        (s2 as PureStrategy).strategy
       ];
 
       if (newPayoff > payoff1) {
@@ -174,10 +171,8 @@ export default class TwoPlayerGame extends Game {
     }
 
     // Check if player 2 has a better strategy given s1
-    for (const otherStrategy of player2Strategies.filter(
-      (s) => s !== s2.strategy
-    )) {
-      const [_, newPayoff] = this.matrix.paymentsMatrix[s1.strategy][
+    for (const otherStrategy of player2Strategies.filter((s) => s !== s2.strategy)) {
+      const [_, newPayoff] = this.matrix.paymentsMatrix[(s1 as PureStrategy).strategy][
         otherStrategy
       ];
 
@@ -190,6 +185,19 @@ export default class TwoPlayerGame extends Game {
   }
 
   getGameResults(): Results {
+    let mixedStrategies: MixedStrategy[];
+    switch (this.playStyle) {
+      case PlayStyle.MixedStrategy:
+        mixedStrategies = this.currentPlayerStrategies as [MixedStrategy, MixedStrategy];
+        mixedStrategies.forEach((ms) => (ms.player.cookies = ms.expectedValue));
+        break;
+      default:
+        mixedStrategies = this.calculateMixedStrategies();
+        break;
+    }
+
+    const expectedValues = this.calculateExpectedValues(mixedStrategies);
+
     const [firstPlayer, secondPlayer]: (Player & {
       place?: 1 | 2 | 3;
     })[] = this.players;
@@ -204,9 +212,6 @@ export default class TwoPlayerGame extends Game {
       secondPlayer.place = 1;
       firstPlayer.place = 2;
     }
-
-    const mixedStrategies: MixedStrategy[] = this.calculateMixedStrategies();
-    const expectedValues = this.calculateExpectedValues(mixedStrategies);
 
     return {
       scoreTable: [firstPlayer, secondPlayer],

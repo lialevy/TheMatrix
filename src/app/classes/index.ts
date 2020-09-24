@@ -8,6 +8,7 @@ import Player from './Player.class';
 import Round from './Round.class';
 import Strategy from './Strategy.class';
 import MixedStrategy from './MixedStrategy.class';
+import PureStrategy from './PureStrategy.class';
 import PlayerType from './PlayerType.enum';
 import GameType from './GameType.enum';
 import PlayStyle from './PlayStyle.enum';
@@ -26,4 +27,5 @@ export {
   GameType,
   PlayerType,
   PlayStyle,
+  PureStrategy,
 };
